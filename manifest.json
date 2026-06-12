@@ -1,0 +1,817 @@
+{
+  "total_examples": 144,
+  "categories": [
+    {
+      "folder": "01_language_basics",
+      "title": "Language basics and source organization",
+      "count": 6
+    },
+    {
+      "folder": "02_control_flow",
+      "title": "Control flow and statements",
+      "count": 6
+    },
+    {
+      "folder": "03_types_values_memory",
+      "title": "Types, values, identity, assignability, memory model",
+      "count": 6
+    },
+    {
+      "folder": "04_arrays_slices_strings",
+      "title": "Arrays, slices, strings and bytes",
+      "count": 13
+    },
+    {
+      "folder": "05_maps_sets",
+      "title": "Maps, sets and grouping",
+      "count": 8
+    },
+    {
+      "folder": "06_functions_methods_interfaces",
+      "title": "Functions, methods, interfaces",
+      "count": 6
+    },
+    {
+      "folder": "07_generics",
+      "title": "Generics and type constraints",
+      "count": 8
+    },
+    {
+      "folder": "08_errors_panic_defer",
+      "title": "Errors, panic, recover and defer",
+      "count": 6
+    },
+    {
+      "folder": "09_concurrency_channels",
+      "title": "Goroutines, channels and select",
+      "count": 10
+    },
+    {
+      "folder": "10_context_cancellation",
+      "title": "Context, cancellation and timeouts",
+      "count": 5
+    },
+    {
+      "folder": "11_sync_atomics",
+      "title": "sync package and atomics",
+      "count": 6
+    },
+    {
+      "folder": "12_parallel_slice_calculations",
+      "title": "Parallel slice calculations",
+      "count": 9
+    },
+    {
+      "folder": "13_http_servers_clients",
+      "title": "HTTP servers and clients",
+      "count": 10
+    },
+    {
+      "folder": "14_json_files_io",
+      "title": "JSON, files and I/O",
+      "count": 7
+    },
+    {
+      "folder": "15_testing_benchmarking",
+      "title": "Testing, benchmarking and fuzzing",
+      "count": 6
+    },
+    {
+      "folder": "16_runtime_performance",
+      "title": "Runtime and performance interview tasks",
+      "count": 8
+    },
+    {
+      "folder": "17_colly_scraping",
+      "title": "Colly scraping examples",
+      "count": 18
+    },
+    {
+      "folder": "18_mini_projects",
+      "title": "Small integrated projects",
+      "count": 6
+    }
+  ],
+  "examples": [
+    {
+      "category": "01_language_basics",
+      "title": "hello-main-package-and-init-order",
+      "file": "01_language_basics/hello-main-package-and-init-order.md"
+    },
+    {
+      "category": "01_language_basics",
+      "title": "iota-bitmask-permissions",
+      "file": "01_language_basics/iota-bitmask-permissions.md"
+    },
+    {
+      "category": "01_language_basics",
+      "title": "shadowing-short-variable-trap",
+      "file": "01_language_basics/shadowing-short-variable-trap.md"
+    },
+    {
+      "category": "01_language_basics",
+      "title": "blank-identifier-for-compile-time-interface-check",
+      "file": "01_language_basics/blank-identifier-for-compile-time-interface-check.md"
+    },
+    {
+      "category": "01_language_basics",
+      "title": "exported-identifiers-and-package-api",
+      "file": "01_language_basics/exported-identifiers-and-package-api.md"
+    },
+    {
+      "category": "01_language_basics",
+      "title": "type-alias-vs-new-defined-type",
+      "file": "01_language_basics/type-alias-vs-new-defined-type.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "for-range-over-integer-go122",
+      "file": "02_control_flow/for-range-over-integer-go122.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "labeled-break-out-of-nested-loop",
+      "file": "02_control_flow/labeled-break-out-of-nested-loop.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "switch-without-expression-classifier",
+      "file": "02_control_flow/switch-without-expression-classifier.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "type-switch-format-any",
+      "file": "02_control_flow/type-switch-format-any.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "select-default-nonblocking-receive",
+      "file": "02_control_flow/select-default-nonblocking-receive.md"
+    },
+    {
+      "category": "02_control_flow",
+      "title": "defer-lifo-resource-cleanup",
+      "file": "02_control_flow/defer-lifo-resource-cleanup.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "array-copy-vs-slice-sharing",
+      "file": "03_types_values_memory/array-copy-vs-slice-sharing.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "struct-padding-order-fields",
+      "file": "03_types_values_memory/struct-padding-order-fields.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "nil-interface-vs-interface-holding-nil-pointer",
+      "file": "03_types_values_memory/nil-interface-vs-interface-holding-nil-pointer.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "method-set-pointer-vs-value-receiver",
+      "file": "03_types_values_memory/method-set-pointer-vs-value-receiver.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "assignability-with-underlying-types",
+      "file": "03_types_values_memory/assignability-with-underlying-types.md"
+    },
+    {
+      "category": "03_types_values_memory",
+      "title": "zero-values-reference-types",
+      "file": "03_types_values_memory/zero-values-reference-types.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "reverse-slice-in-place",
+      "file": "04_arrays_slices_strings/reverse-slice-in-place.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "rotate-slice-left-k",
+      "file": "04_arrays_slices_strings/rotate-slice-left-k.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "dedupe-sorted-slice-in-place",
+      "file": "04_arrays_slices_strings/dedupe-sorted-slice-in-place.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "remove-element-preserve-order",
+      "file": "04_arrays_slices_strings/remove-element-preserve-order.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "remove-element-no-order",
+      "file": "04_arrays_slices_strings/remove-element-no-order.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "merge-sorted-slices",
+      "file": "04_arrays_slices_strings/merge-sorted-slices.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "binary-search-lower-bound",
+      "file": "04_arrays_slices_strings/binary-search-lower-bound.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "chunk-slice",
+      "file": "04_arrays_slices_strings/chunk-slice.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "rune-safe-reverse-string",
+      "file": "04_arrays_slices_strings/rune-safe-reverse-string.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "is-palindrome-ignore-nonletters",
+      "file": "04_arrays_slices_strings/is-palindrome-ignore-nonletters.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "string-builder-join",
+      "file": "04_arrays_slices_strings/string-builder-join.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "sliding-window-max-sum",
+      "file": "04_arrays_slices_strings/sliding-window-max-sum.md"
+    },
+    {
+      "category": "04_arrays_slices_strings",
+      "title": "copy-overlapping-slices",
+      "file": "04_arrays_slices_strings/copy-overlapping-slices.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "word-frequency-counter",
+      "file": "05_maps_sets/word-frequency-counter.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "group-users-by-role",
+      "file": "05_maps_sets/group-users-by-role.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "set-with-map-struct",
+      "file": "05_maps_sets/set-with-map-struct.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "two-sum-map",
+      "file": "05_maps_sets/two-sum-map.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "first-non-repeating-rune",
+      "file": "05_maps_sets/first-non-repeating-rune.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "invert-map-detect-duplicates",
+      "file": "05_maps_sets/invert-map-detect-duplicates.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "sort-map-keys-for-deterministic-output",
+      "file": "05_maps_sets/sort-map-keys-for-deterministic-output.md"
+    },
+    {
+      "category": "05_maps_sets",
+      "title": "lru-cache-with-list-and-map",
+      "file": "05_maps_sets/lru-cache-with-list-and-map.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "closure-counter",
+      "file": "06_functions_methods_interfaces/closure-counter.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "functional-options-pattern",
+      "file": "06_functions_methods_interfaces/functional-options-pattern.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "sort-custom-structs",
+      "file": "06_functions_methods_interfaces/sort-custom-structs.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "interface-small-storage",
+      "file": "06_functions_methods_interfaces/interface-small-storage.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "method-expression-vs-method-value",
+      "file": "06_functions_methods_interfaces/method-expression-vs-method-value.md"
+    },
+    {
+      "category": "06_functions_methods_interfaces",
+      "title": "io-reader-line-counter",
+      "file": "06_functions_methods_interfaces/io-reader-line-counter.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-stack",
+      "file": "07_generics/generic-stack.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-map-filter-reduce",
+      "file": "07_generics/generic-map-filter-reduce.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "ordered-min-max-constraint",
+      "file": "07_generics/ordered-min-max-constraint.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-set-operations",
+      "file": "07_generics/generic-set-operations.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-linked-list",
+      "file": "07_generics/generic-linked-list.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "constraint-with-method-and-underlying-type",
+      "file": "07_generics/constraint-with-method-and-underlying-type.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-comparable-map-key-cache",
+      "file": "07_generics/generic-comparable-map-key-cache.md"
+    },
+    {
+      "category": "07_generics",
+      "title": "generic-channel-fan-in",
+      "file": "07_generics/generic-channel-fan-in.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "wrap-and-match-errors",
+      "file": "08_errors_panic_defer/wrap-and-match-errors.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "custom-error-type-with-errors-as",
+      "file": "08_errors_panic_defer/custom-error-type-with-errors-as.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "recover-at-goroutine-boundary",
+      "file": "08_errors_panic_defer/recover-at-goroutine-boundary.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "defer-modifies-named-result",
+      "file": "08_errors_panic_defer/defer-modifies-named-result.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "defer-argument-evaluation-time",
+      "file": "08_errors_panic_defer/defer-argument-evaluation-time.md"
+    },
+    {
+      "category": "08_errors_panic_defer",
+      "title": "panic-safe-parser",
+      "file": "08_errors_panic_defer/panic-safe-parser.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "waitgroup-basic-worker-start",
+      "file": "09_concurrency_channels/waitgroup-basic-worker-start.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "channel-generator-and-range",
+      "file": "09_concurrency_channels/channel-generator-and-range.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "worker-pool-jobs-results",
+      "file": "09_concurrency_channels/worker-pool-jobs-results.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "fan-out-fan-in-pipeline",
+      "file": "09_concurrency_channels/fan-out-fan-in-pipeline.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "semaphore-bounded-concurrency",
+      "file": "09_concurrency_channels/semaphore-bounded-concurrency.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "or-done-channel-combinator",
+      "file": "09_concurrency_channels/or-done-channel-combinator.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "tee-channel-values",
+      "file": "09_concurrency_channels/tee-channel-values.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "rate-limiter-with-ticker",
+      "file": "09_concurrency_channels/rate-limiter-with-ticker.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "safe-channel-closing-owner",
+      "file": "09_concurrency_channels/safe-channel-closing-owner.md"
+    },
+    {
+      "category": "09_concurrency_channels",
+      "title": "first-result-wins",
+      "file": "09_concurrency_channels/first-result-wins.md"
+    },
+    {
+      "category": "10_context_cancellation",
+      "title": "context-timeout-http-request",
+      "file": "10_context_cancellation/context-timeout-http-request.md"
+    },
+    {
+      "category": "10_context_cancellation",
+      "title": "cancellable-worker-loop",
+      "file": "10_context_cancellation/cancellable-worker-loop.md"
+    },
+    {
+      "category": "10_context_cancellation",
+      "title": "pipeline-with-context-cancellation",
+      "file": "10_context_cancellation/pipeline-with-context-cancellation.md"
+    },
+    {
+      "category": "10_context_cancellation",
+      "title": "context-values-request-id",
+      "file": "10_context_cancellation/context-values-request-id.md"
+    },
+    {
+      "category": "10_context_cancellation",
+      "title": "errgroup-like-cancel-on-error",
+      "file": "10_context_cancellation/errgroup-like-cancel-on-error.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "mutex-protected-counter",
+      "file": "11_sync_atomics/mutex-protected-counter.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "rwmutex-cache",
+      "file": "11_sync_atomics/rwmutex-cache.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "sync-once-lazy-init",
+      "file": "11_sync_atomics/sync-once-lazy-init.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "atomic-counter",
+      "file": "11_sync_atomics/atomic-counter.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "sync-pool-buffer-reuse",
+      "file": "11_sync_atomics/sync-pool-buffer-reuse.md"
+    },
+    {
+      "category": "11_sync_atomics",
+      "title": "sync-cond-broadcast",
+      "file": "11_sync_atomics/sync-cond-broadcast.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-sum-int-slice",
+      "file": "12_parallel_slice_calculations/parallel-sum-int-slice.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-map-preserve-order",
+      "file": "12_parallel_slice_calculations/parallel-map-preserve-order.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-filter-stable",
+      "file": "12_parallel_slice_calculations/parallel-filter-stable.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-min-max",
+      "file": "12_parallel_slice_calculations/parallel-min-max.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-word-count",
+      "file": "12_parallel_slice_calculations/parallel-word-count.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-histogram-by-buckets",
+      "file": "12_parallel_slice_calculations/parallel-histogram-by-buckets.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-prefix-sum-two-pass",
+      "file": "12_parallel_slice_calculations/parallel-prefix-sum-two-pass.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-dot-product",
+      "file": "12_parallel_slice_calculations/parallel-dot-product.md"
+    },
+    {
+      "category": "12_parallel_slice_calculations",
+      "title": "parallel-processing-with-context",
+      "file": "12_parallel_slice_calculations/parallel-processing-with-context.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "minimal-http-server",
+      "file": "13_http_servers_clients/minimal-http-server.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "json-api-handler",
+      "file": "13_http_servers_clients/json-api-handler.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "middleware-logging-status-recorder",
+      "file": "13_http_servers_clients/middleware-logging-status-recorder.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "http-client-timeout-and-status-check",
+      "file": "13_http_servers_clients/http-client-timeout-and-status-check.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "graceful-shutdown-server",
+      "file": "13_http_servers_clients/graceful-shutdown-server.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "request-scoped-context-value-middleware",
+      "file": "13_http_servers_clients/request-scoped-context-value-middleware.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "streaming-response-flusher",
+      "file": "13_http_servers_clients/streaming-response-flusher.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "file-upload-handler",
+      "file": "13_http_servers_clients/file-upload-handler.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "in-memory-rate-limit-middleware",
+      "file": "13_http_servers_clients/in-memory-rate-limit-middleware.md"
+    },
+    {
+      "category": "13_http_servers_clients",
+      "title": "httptest-server-client",
+      "file": "13_http_servers_clients/httptest-server-client.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "json-marshal-unmarshal-struct-tags",
+      "file": "14_json_files_io/json-marshal-unmarshal-struct-tags.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "stream-json-lines-decoder",
+      "file": "14_json_files_io/stream-json-lines-decoder.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "read-file-lines-scanner",
+      "file": "14_json_files_io/read-file-lines-scanner.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "csv-reader-to-structs",
+      "file": "14_json_files_io/csv-reader-to-structs.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "filepath-walk-extension-filter",
+      "file": "14_json_files_io/filepath-walk-extension-filter.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "gzip-compress-decompress",
+      "file": "14_json_files_io/gzip-compress-decompress.md"
+    },
+    {
+      "category": "14_json_files_io",
+      "title": "copy-file-with-buffer",
+      "file": "14_json_files_io/copy-file-with-buffer.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "table-driven-unit-test",
+      "file": "15_testing_benchmarking/table-driven-unit-test.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "httptest-handler-test",
+      "file": "15_testing_benchmarking/httptest-handler-test.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "benchmark-string-concat",
+      "file": "15_testing_benchmarking/benchmark-string-concat.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "fuzz-reverse-twice",
+      "file": "15_testing_benchmarking/fuzz-reverse-twice.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "race-detector-shared-map-test",
+      "file": "15_testing_benchmarking/race-detector-shared-map-test.md"
+    },
+    {
+      "category": "15_testing_benchmarking",
+      "title": "golden-file-test",
+      "file": "15_testing_benchmarking/golden-file-test.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "preallocate-slice-before-append",
+      "file": "16_runtime_performance/preallocate-slice-before-append.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "avoid-large-range-value-copy",
+      "file": "16_runtime_performance/avoid-large-range-value-copy.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "clip-slice-capacity-before-append",
+      "file": "16_runtime_performance/clip-slice-capacity-before-append.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "strings-builder-grow-once",
+      "file": "16_runtime_performance/strings-builder-grow-once.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "map-increment-efficient",
+      "file": "16_runtime_performance/map-increment-efficient.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "bounds-check-elimination-hint",
+      "file": "16_runtime_performance/bounds-check-elimination-hint.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "object-pool-with-reset",
+      "file": "16_runtime_performance/object-pool-with-reset.md"
+    },
+    {
+      "category": "16_runtime_performance",
+      "title": "escape-analysis-example",
+      "file": "16_runtime_performance/escape-analysis-example.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-basic-title-scraper",
+      "file": "17_colly_scraping/colly-basic-title-scraper.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-error-handling",
+      "file": "17_colly_scraping/colly-error-handling.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-login-post-before-scrape",
+      "file": "17_colly_scraping/colly-login-post-before-scrape.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-max-depth-crawler",
+      "file": "17_colly_scraping/colly-max-depth-crawler.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-parallel-async-scraper",
+      "file": "17_colly_scraping/colly-parallel-async-scraper.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-rate-limit-delay",
+      "file": "17_colly_scraping/colly-rate-limit-delay.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-queue-crawl",
+      "file": "17_colly_scraping/colly-queue-crawl.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-request-context-metadata",
+      "file": "17_colly_scraping/colly-request-context-metadata.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-url-filter",
+      "file": "17_colly_scraping/colly-url-filter.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-proxy-switcher",
+      "file": "17_colly_scraping/colly-proxy-switcher.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-multipart-form-submit",
+      "file": "17_colly_scraping/colly-multipart-form-submit.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-scraper-server-endpoint",
+      "file": "17_colly_scraping/colly-scraper-server-endpoint.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-local-html-file",
+      "file": "17_colly_scraping/colly-local-html-file.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-hackernews-comments-style",
+      "file": "17_colly_scraping/colly-hackernews-comments-style.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-shopify-sitemap-style",
+      "file": "17_colly_scraping/colly-shopify-sitemap-style.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-coursera-course-card-style",
+      "file": "17_colly_scraping/colly-coursera-course-card-style.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-reddit-posts-style",
+      "file": "17_colly_scraping/colly-reddit-posts-style.md"
+    },
+    {
+      "category": "17_colly_scraping",
+      "title": "colly-xkcd-store-items-style",
+      "file": "17_colly_scraping/colly-xkcd-store-items-style.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "in-memory-url-shortener-http",
+      "file": "18_mini_projects/in-memory-url-shortener-http.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "ttl-cache-with-cleanup-goroutine",
+      "file": "18_mini_projects/ttl-cache-with-cleanup-goroutine.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "pubsub-topic-broker",
+      "file": "18_mini_projects/pubsub-topic-broker.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "cli-todo-json-file",
+      "file": "18_mini_projects/cli-todo-json-file.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "bounded-crawler-standard-library",
+      "file": "18_mini_projects/bounded-crawler-standard-library.md"
+    },
+    {
+      "category": "18_mini_projects",
+      "title": "chat-broadcast-server-skeleton",
+      "file": "18_mini_projects/chat-broadcast-server-skeleton.md"
+    }
+  ]
+}
