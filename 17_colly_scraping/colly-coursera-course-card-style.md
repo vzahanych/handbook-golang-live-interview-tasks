@@ -38,9 +38,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `_ = courses[:0]` resets slice length keeping capacity — reuse buffer across pages in multi-page crawl.
+- Example uses `example.com` — real Coursera is dynamic; pattern is what interview tests.
+- Map DOM fields to struct early — cleaner JSON export downstream.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Pointer vs value in slice?**  
+A: `[]Course` values fine for small structs; `[]*Course` if mutating after scrape.
+
+**Q: Complexity?**  
+A: O(cards) per listing page.
+
+**Q: Edge cases?**  
+A: Missing rating text, internationalized titles, sponsored cards duplicate selectors.
+
+**Q: OnScraped timing?**  
+A: Fires after all OnHTML for that response — safe to print `len(courses)`.
+
+**Q: Production?**  
+A: Schema validation, dedupe by course URL, incremental crawl by category sitemap.

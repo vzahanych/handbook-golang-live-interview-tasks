@@ -1,7 +1,7 @@
 # string builder join
 
 ## Live interview task
-Join strings with a separator using strings.Builder and capacity precomputation.
+Join strings with a separator using `strings.Builder` and capacity precomputation.
 
 ## Concepts covered
 - strings.Builder
@@ -19,9 +19,13 @@ import (
 )
 
 func join(parts []string, sep string) string {
-    if len(parts) == 0 { return "" }
-    n := len(sep) * (len(parts)-1)
-    for _, p := range parts { n += len(p) }
+    if len(parts) == 0 {
+        return ""
+    }
+    n := len(sep) * (len(parts) - 1)
+    for _, p := range parts {
+        n += len(p)
+    }
     var b strings.Builder
     b.Grow(n)
     b.WriteString(parts[0])
@@ -32,7 +36,9 @@ func join(parts []string, sep string) string {
     return b.String()
 }
 
-func main() { fmt.Println(join([]string{"a","b","c"}, ",")) }
+func main() {
+    fmt.Println(join([]string{"a", "b", "c"}, ",")) // a,b,c
+}
 ```
 
 ## Run
@@ -42,9 +48,21 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `+` in loop allocates new string each time — O(n²) total bytes copied.
+- `strings.Join(parts, sep)` is stdlib — implement manually to show you understand allocation.
+- `Grow(n)` is hint only — Builder may still grow; `n` should be exact byte count.
+- `Builder` must not be copied after first use.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Why not `bytes.Buffer`?**  
+A: Both work; `strings.Builder` is specialized for string building (no `Write` interface overhead for string-only).
+
+**Q: Complexity?**  
+A: O(total bytes) time with one allocation when `Grow` is correct.
+
+**Q: Single part?**  
+A: Return `parts[0]` — no separator needed.
+
+**Q: Interview follow-up?**  
+A: Benchmark `+` vs `Builder` vs `Join` — classic Go perf question.

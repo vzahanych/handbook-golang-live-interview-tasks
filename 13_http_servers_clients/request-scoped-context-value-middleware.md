@@ -1,11 +1,12 @@
 # request scoped context value middleware
 
 ## Live interview task
-Attach a request ID to context in middleware.
+Attach a request ID to context in middleware and read it in handlers.
 
 ## Concepts covered
-- http middleware
-- context values
+- middleware
+- context.WithValue
+- r.WithContext
 
 ## Candidate solution
 
@@ -14,35 +15,70 @@ package main
 
 import (
     "context"
+    "crypto/rand"
+    "encoding/hex"
     "fmt"
+    "log"
     "net/http"
-    "time"
 )
 
-type key string
-const requestID key = "requestID"
+type ctxKey int
+
+const requestIDKey ctxKey = iota
 
 func withRequestID(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        id := fmt.Sprintf("%d", time.Now().UnixNano())
-        ctx := context.WithValue(r.Context(), requestID, id)
+        id := newRequestID()
+        w.Header().Set("X-Request-ID", id)
+        ctx := context.WithValue(r.Context(), requestIDKey, id)
         next.ServeHTTP(w, r.WithContext(ctx))
     })
 }
 
-func main() { http.ListenAndServe(":8080", withRequestID(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){ fmt.Fprintln(w, r.Context().Value(requestID)) }))) }
+func newRequestID() string {
+    var b [8]byte
+    _, _ = rand.Read(b[:])
+    return hex.EncodeToString(b[:])
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    id, _ := r.Context().Value(requestIDKey).(string)
+    log.Println("request", id)
+    fmt.Fprintln(w, id)
+}
+
+func main() {
+    http.Handle("/", withRequestID(http.HandlerFunc(handler)))
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
 ```
 
 ## Run
 
 ```bash
 go run .
+curl -i localhost:8080/
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Use **unexported key type** — avoid context key collisions.
+- Pass `r.WithContext(ctx)` to next handler — not the old request.
+- `r.Context()` canceled when client disconnects — respect in long handlers.
+- Prefer structured logging with request ID in every log line.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Accept client X-Request-ID?**  
+A: Optional — validate format or generate if missing.
+
+**Q: vs global variable?**  
+A: Context is per-request — safe concurrent.
+
+**Q: OpenTelemetry?**  
+A: Trace ID in context — industry standard extension.
+
+**Q: Middleware order?**  
+A: Request ID early — logging/auth can use it.
+
+**Q: Complexity?**  
+A: O(1) per request.

@@ -35,9 +35,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- First arg to `queue.New` is consumer parallelism — not the same as `LimitRule.Parallelism`.
+- `InMemoryQueueStorage` loses queue on crash — use Redis/DB storage for resume.
+- `q.Run(c)` blocks until queue drained — add URLs dynamically from OnHTML callbacks.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Queue vs direct Visit?**  
+A: Queue serializes scheduling, supports pause/resume and persistent storage backends.
+
+**Q: Complexity?**  
+A: O(urls) with W parallel consumers.
+
+**Q: MaxSize 1000?**  
+A: Backpressure — producer must handle full queue.
+
+**Q: Edge cases?**  
+A: Duplicate AddURL — dedupe with visited set before enqueue.
+
+**Q: Production?**  
+A: Redis queue storage, dead-letter for permanent failures.

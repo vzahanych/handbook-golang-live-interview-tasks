@@ -1,11 +1,12 @@
 # golden file test
 
 ## Live interview task
-Use a golden file to test formatted output.
+Use a golden file in `testdata/` to test formatted output.
 
 ## Concepts covered
 - testdata
 - golden files
+- snapshot testing
 
 ## Candidate solution
 
@@ -17,27 +18,49 @@ import (
     "testing"
 )
 
-func Render() string { return "name,count\ngo,3\n" }
+func Render() string {
+    return "name,count\ngo,3\n"
+}
 
 func TestRenderGolden(t *testing.T) {
     want, err := os.ReadFile("testdata/report.golden")
-    if err != nil { t.Fatal(err) }
-    if got := Render(); got != string(want) { t.Fatalf("got %q want %q", got, want) }
+    if err != nil {
+        t.Fatal(err)
+    }
+    got := Render()
+    if got != string(want) {
+        t.Fatalf("got %q want %q", got, string(want))
+    }
 }
 ```
 
-## Run
+## Setup
 
 ```bash
-mkdir -p testdata && printf "name,count
-go,3
-" > testdata/report.golden && go test
+mkdir -p testdata
+printf 'name,count\ngo,3\n' > testdata/report.golden
+go test
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `testdata/` ignored by `go build` — convention for fixtures.
+- Update golden intentionally — `-update` flag pattern in custom test helper.
+- Normalize line endings (`\n` vs `\r\n`) in cross-platform CI.
+- Large goldens — consider smaller unit tests; goldens for reports/CLI output.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs inline string in test?**  
+A: Golden better for multi-line output; inline for small.
+
+**Q: `cmp.Diff`?**  
+A: Better failure messages — `google/go-cmp`.
+
+**Q: Regenerate workflow?**  
+A: `if os.Getenv("UPDATE_GOLDEN") != "" { os.WriteFile(...) }`.
+
+**Q: Binary output?**  
+A: `bytes.Equal` with golden bytes file.
+
+**Q: Complexity?**  
+A: O(output size) compare.

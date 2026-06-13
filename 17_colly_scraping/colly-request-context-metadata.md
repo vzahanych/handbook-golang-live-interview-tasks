@@ -33,9 +33,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `colly.Context` is string key-value per request — propagate via `e.Request.Visit` with `r.Ctx`.
+- Prefer `Request("GET", ...)` when seeding with metadata; `Visit` creates fresh context.
+- For typed data use JSON in context or attach via `r.Context` (stdlib context) in newer patterns.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Pass depth/parent URL?**  
+A: `ctx.Put("parent", r.URL.String())` before child `Visit`.
+
+**Q: Complexity?**  
+A: O(1) map lookup per callback.
+
+**Q: Edge cases?**  
+A: Context not copied if you call `Visit` without inheriting — use `e.Request.Visit`.
+
+**Q: vs closure variables?**  
+A: Context survives async callbacks cleaner than loop capture bugs.
+
+**Q: Production?**  
+A: Trace ID in context for structured logs across redirect chain.

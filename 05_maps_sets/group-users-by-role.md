@@ -26,7 +26,11 @@ func groupByRole(users []User) map[string][]User {
 }
 
 func main() {
-    fmt.Println(groupByRole([]User{{"Ann","admin"},{"Bob","user"},{"Cat","admin"}}))
+    fmt.Println(groupByRole([]User{
+        {"Ann", "admin"},
+        {"Bob", "user"},
+        {"Cat", "admin"},
+    }))
 }
 ```
 
@@ -37,9 +41,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `append` to `out[u.Role]` when key missing — `nil` slice append works (allocates on first append).
+- Stores **copies** of `User` structs in each group slice.
+- For pointers: `[]*User` avoids copy but shares mutable state.
+- Generic version: `groupBy[T any, K comparable](items []T, key func(T) K) map[K][]T`.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Complexity?**  
+A: O(n) time, O(n) space for stored users.
+
+**Q: Preserve input order within group?**  
+A: Yes — append preserves encounter order.
+
+**Q: Empty role string?**  
+A: Valid key — users with `Role: ""` group together.
+
+**Q: Preallocate slice per key?**  
+A: Hard without knowing sizes — optional second pass count then fill.
+
+**Q: sql/database pattern?**  
+A: Same as `GROUP BY` in SQL — very common in service layers.

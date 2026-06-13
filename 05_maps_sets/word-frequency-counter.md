@@ -21,12 +21,14 @@ import (
 func freq(text string) map[string]int {
     m := make(map[string]int)
     for _, w := range strings.Fields(strings.ToLower(text)) {
-        m[w]++
+        m[w]++ // missing key reads as 0, then stores count
     }
     return m
 }
 
-func main() { fmt.Println(freq("Go go channels maps")) }
+func main() {
+    fmt.Println(freq("Go go channels maps")) // map[channels:1 go:2 maps:1]
+}
 ```
 
 ## Run
@@ -36,9 +38,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `m[w]++` works because read of missing key returns zero value `0`.
+- `strings.Fields` splits on Unicode whitespace — punctuation sticks to words (`"go,"` ≠ `"go"`).
+- Map iteration order is **randomized** — sort keys for stable output.
+- For large texts: stream lines instead of loading all into memory.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Complexity?**  
+A: O(n) words, O(u) space for u unique words.
+
+**Q: Case sensitivity?**  
+A: `ToLower` for case-insensitive; use `strings.EqualFold` when comparing pairs.
+
+**Q: Better tokenization?**  
+A: `strings.FieldsFunc` with custom rune predicate; or regexp for punctuation strip.
+
+**Q: Thread-safe?**  
+A: No — use `sync.Mutex` around map or `sync.Map` for read-heavy caches.
+
+**Q: Edge cases?**  
+A: Empty string, only whitespace, single word repeated.

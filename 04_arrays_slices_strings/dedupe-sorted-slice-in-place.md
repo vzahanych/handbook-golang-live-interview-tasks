@@ -5,7 +5,7 @@ Remove duplicates from a sorted slice without allocating a new backing array.
 
 ## Concepts covered
 - slices
-- write index
+- write index (read/write pointers)
 - in-place filtering
 
 ## Candidate solution
@@ -16,7 +16,9 @@ package main
 import "fmt"
 
 func dedupeSorted(s []int) []int {
-    if len(s) < 2 { return s }
+    if len(s) < 2 {
+        return s
+    }
     w := 1
     for r := 1; r < len(s); r++ {
         if s[r] != s[w-1] {
@@ -27,7 +29,9 @@ func dedupeSorted(s []int) []int {
     return s[:w]
 }
 
-func main() { fmt.Println(dedupeSorted([]int{1,1,2,2,2,3})) }
+func main() {
+    fmt.Println(dedupeSorted([]int{1, 1, 2, 2, 2, 3})) // [1 2 3]
+}
 ```
 
 ## Run
@@ -37,9 +41,21 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Requires **sorted** input — unsorted dedupe needs a map/set.
+- Return `s[:w]` — capacity may still hold old tail (GC concern for pointers — zero tail if needed).
+- Same pattern as `removeAll`, `partition` — "write index" is a core live-coding pattern.
+- `slices.Compact` (Go 1.21+) does this for sorted comparable slices.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Complexity?**  
+A: O(n) time, O(1) extra space.
+
+**Q: All duplicates?**  
+A: If entire slice is one value, result length 1.
+
+**Q: Unsorted input?**  
+A: `map[T]struct{}` or sort first O(n log n).
+
+**Q: Stable unique for unsorted?**  
+A: Use map + single pass preserving first occurrence order.

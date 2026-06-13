@@ -6,7 +6,7 @@ Show how a deferred function can observe and modify named return values.
 ## Concepts covered
 - defer
 - named results
-- return
+- naked return
 
 ## Candidate solution
 
@@ -20,7 +20,9 @@ func compute() (n int) {
     return 21
 }
 
-func main() { fmt.Println(compute()) }
+func main() {
+    fmt.Println(compute()) // 42
+}
 ```
 
 ## Run
@@ -29,10 +31,31 @@ func main() { fmt.Println(compute()) }
 go run .
 ```
 
-## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+## Expected output
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+```
+42
+```
+
+## Interview notes / pitfalls
+- `return 21` on named result `n` sets `n=21`, **then** defers run, then function returns `n`.
+- Common pattern: `defer func() { if err != nil { ... } }()` with named `(err error)`.
+- Defer can change named return; cannot change unnamed return value the same way.
+- `return` with expression on named results still assigns before defers.
+
+## Q&A
+
+**Q: Why named returns?**  
+A: Defer cleanup modifying `err`; documentation of return values in signature.
+
+**Q: Downside?**  
+A: Easy to shadow `err` with `:=` — named return trap in nested blocks.
+
+**Q: `recover` + named `err`?**  
+A: `defer func() { if r := recover(); r != nil { err = fmt.Errorf(...) } }()`.
+
+**Q: Performance?**  
+A: Named results may escape to heap — minor; clarity trade-off.
+
+**Q: Interview output?**  
+A: Always 42 — defers multiply after `return 21`.

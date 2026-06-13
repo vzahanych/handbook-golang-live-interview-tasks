@@ -34,10 +34,31 @@ func main() {
 go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
-## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+## Expected output
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+```
+visiting https://example.com
+Example Domain
+```
+
+## Interview notes / pitfalls
+- `AllowedDomains` blocks off-domain redirects — without it Colly may follow external links.
+- `OnHTML` runs per matching element — multiple `<title>` tags mean multiple callbacks.
+- Colly uses goquery under the hood — CSS selectors, not full XPath by default.
+
+## Q&A
+
+**Q: Collector vs NewCollector options?**  
+A: Options set defaults (domain, depth, async); child collectors inherit with `c.Clone()`.
+
+**Q: Complexity?**  
+A: O(page size) DOM walk; one HTTP request here.
+
+**Q: Edge cases?**  
+A: Empty title, JS-rendered title (needs headless browser), charset decoding.
+
+**Q: Production?**  
+A: Timeouts, retries, User-Agent, respect robots.txt, rate limits.
+
+**Q: Test without network?**  
+A: `colly-local-html-file` pattern or httptest server serving HTML.

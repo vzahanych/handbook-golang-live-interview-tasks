@@ -1,12 +1,12 @@
 # gzip compress decompress
 
 ## Live interview task
-Compress and decompress bytes with gzip.
+Compress and decompress bytes with `compress/gzip`.
 
 ## Concepts covered
 - gzip
-- bytes.Buffer
-- io
+- io pipelines
+- Close writers
 
 ## Candidate solution
 
@@ -23,11 +23,23 @@ import (
 func main() {
     var buf bytes.Buffer
     zw := gzip.NewWriter(&buf)
-    zw.Write([]byte("hello hello hello"))
-    zw.Close()
-    zr, _ := gzip.NewReader(&buf)
-    plain, _ := io.ReadAll(zr)
-    zr.Close()
+    if _, err := zw.Write([]byte("hello hello hello")); err != nil {
+        panic(err)
+    }
+    if err := zw.Close(); err != nil { // flush footer — required
+        panic(err)
+    }
+
+    zr, err := gzip.NewReader(bytes.NewReader(buf.Bytes()))
+    if err != nil {
+        panic(err)
+    }
+    defer zr.Close()
+
+    plain, err := io.ReadAll(zr)
+    if err != nil {
+        panic(err)
+    }
     fmt.Println(string(plain))
 }
 ```
@@ -39,9 +51,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- **Must** `Close()` gzip writer — writes CRC and footer; `Flush` not enough for finish.
+- `gzip.NewReader` on non-gzip data errors at header.
+- Stream: `io.Copy(zw, src)` then `zw.Close()`.
+- `gzip.BestSpeed` vs `DefaultCompression` — `zw.Level` via `gzip.NewWriterLevel`.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: File compress?**  
+A: `os.Create` + `gzip.NewWriter(file)`.
+
+**Q: HTTP?**  
+A: `w.Header().Set("Content-Encoding", "gzip")` + gzip writer wrapping ResponseWriter.
+
+**Q: Size increase?**  
+A: Small payloads may grow — gzip needs redundancy.
+
+**Q: vs zlib?**  
+A: gzip = zlib wrapper + header/footer — `compress/zlib` for raw.
+
+**Q: Complexity?**  
+A: O(n) on data size.

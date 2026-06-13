@@ -33,9 +33,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- E-commerce grids repeat structure — one OnHTML handler per `.product` card is idiomatic.
+- Price strings need parsing (`$19.00` → cents) — don't store as float money.
+- Out-of-stock items may omit price — handle empty ChildText.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Struct slice vs println?**  
+A: Collect `[]Product` in OnHTML, emit in OnScraped — same as coursera pattern.
+
+**Q: Complexity?**  
+A: O(products) on page.
+
+**Q: Edge cases?**  
+A: Sale vs regular price, variant SKUs, lazy-loaded images (not in static HTML).
+
+**Q: Pagination?**  
+A: Follow rel=next or crawl collection sitemap.
+
+**Q: Production?**  
+A: Shopify JSON API often easier than HTML for Shopify stores.

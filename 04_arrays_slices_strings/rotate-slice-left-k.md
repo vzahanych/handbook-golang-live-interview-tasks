@@ -21,18 +21,22 @@ func reverse(s []int) {
 }
 
 func rotateLeft(s []int, k int) {
-    if len(s) == 0 { return }
+    if len(s) == 0 {
+        return
+    }
     k %= len(s)
-    if k < 0 { k += len(s) }
+    if k < 0 {
+        k += len(s)
+    }
     reverse(s[:k])
     reverse(s[k:])
     reverse(s)
 }
 
 func main() {
-    s := []int{1,2,3,4,5}
+    s := []int{1, 2, 3, 4, 5}
     rotateLeft(s, 2)
-    fmt.Println(s)
+    fmt.Println(s) // [3 4 5 1 2]
 }
 ```
 
@@ -43,9 +47,21 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Normalize `k` with `k %= len(s)` — rotating by `len` is identity.
+- Three-reversal trick: reverse `[0:k)`, `[k:]`, then whole slice — O(n) time, O(1) space.
+- Alternative: GCD block swap (Juggling) — same complexity, harder to code live.
+- Negative k: treat as rotate right after normalization.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Why three reversals?**  
+A: Classic proof: `reverse(A)+reverse(B)` reversed = `B+A` when rotating partition at k.
+
+**Q: `k > len(s)`?**  
+A: `k %= len(s)` handles it — rotating 7 on length 5 equals rotating 2.
+
+**Q: Edge cases?**  
+A: `k==0`, `k==len`, empty slice, `k` negative.
+
+**Q: Rotate right by k?**  
+A: `rotateLeft(s, len(s)-k)` or reverse order of the three steps.

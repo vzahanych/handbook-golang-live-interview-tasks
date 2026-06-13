@@ -1,12 +1,12 @@
 # sync pool buffer reuse
 
 ## Live interview task
-Use sync.Pool to reuse temporary buffers.
+Use `sync.Pool` to reuse temporary buffers and reduce allocations.
 
 ## Concepts covered
 - sync.Pool
-- allocations
-- temporary objects
+- allocation reduction
+- Reset before reuse
 
 ## Candidate solution
 
@@ -19,18 +19,23 @@ import (
     "sync"
 )
 
-var pool = sync.Pool{New: func() any { return new(bytes.Buffer) }}
+var pool = sync.Pool{
+    New: func() any { return new(bytes.Buffer) },
+}
 
 func render(name string) string {
     b := pool.Get().(*bytes.Buffer)
     b.Reset()
     defer pool.Put(b)
+
     b.WriteString("hello ")
     b.WriteString(name)
-    return b.String()
+    return b.String() // copies bytes — safe after Put
 }
 
-func main() { fmt.Println(render("go")) }
+func main() {
+    fmt.Println(render("go"))
+}
 ```
 
 ## Run
@@ -40,9 +45,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `Pool` objects may be **cleared at GC** — no guarantee of reuse; best-effort cache.
+- Always `Reset()` object before reuse — stale data leak between requests.
+- Return **copy** of buffer bytes before `Put` — other goroutines may Get same buffer.
+- Don't pool objects with sensitive data without zeroing — security consideration.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: When use Pool?**  
+A: High-frequency alloc of same-shaped temp objects (buffers, structs) in hot path.
+
+**Q: When not?**  
+A: Long-lived objects, unbounded growth, objects with finalizers.
+
+**Q: Per-P goroutine pools?**  
+A: Pool shards internally — reduces contention.
+
+**Q: `New` required?**  
+A: `Get` returns nil if empty and no `New` — always provide `New`.
+
+**Q: Complexity?**  
+A: Get/Put O(1); reduces GC pressure.

@@ -6,7 +6,7 @@ Create an HTTP client with timeout and verify status codes.
 ## Concepts covered
 - http.Client
 - timeouts
-- io.ReadAll
+- status codes
 
 ## Candidate solution
 
@@ -23,13 +23,21 @@ import (
 func fetch(url string) ([]byte, error) {
     client := &http.Client{Timeout: 3 * time.Second}
     resp, err := client.Get(url)
-    if err != nil { return nil, err }
+    if err != nil {
+        return nil, err
+    }
     defer resp.Body.Close()
-    if resp.StatusCode < 200 || resp.StatusCode >= 300 { return nil, fmt.Errorf("bad status: %s", resp.Status) }
+
+    if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+        return nil, fmt.Errorf("bad status: %s", resp.Status)
+    }
     return io.ReadAll(resp.Body)
 }
 
-func main() { b, err := fetch("https://example.com"); fmt.Println(len(b), err) }
+func main() {
+    b, err := fetch("https://example.com")
+    fmt.Println(len(b), err)
+}
 ```
 
 ## Run
@@ -39,9 +47,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `Client.Timeout` covers entire exchange — dial, TLS, headers, body read.
+- Finer control: `Transport` with `DialContext`, `TLSHandshakeTimeout`, `ResponseHeaderTimeout`.
+- Always close body — leak connections if not.
+- Check status before read — 500 may still have body to drain.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Reuse client?**  
+A: Yes — `var client = &http.Client{...}` — connection pooling via Transport.
+
+**Q: 404 vs error?**  
+A: 404 returns nil transport err — must check `StatusCode`.
+
+**Q: Context?**  
+A: `NewRequestWithContext` preferred over Client.Timeout alone.
+
+**Q: Redirects?**  
+A: Default follows 3xx — cap with custom CheckRedirect.
+
+**Q: Production?**  
+A: Retry idempotent GET with backoff; circuit breaker for deps.

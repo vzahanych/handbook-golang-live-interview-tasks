@@ -1,11 +1,12 @@
 # strings builder grow once
 
 ## Live interview task
-Reduce allocations by growing strings.Builder once.
+Pre-grow `strings.Builder` once to match final size and reduce reallocations.
 
 ## Concepts covered
 - strings.Builder
 - Grow
+- allocation reduction
 
 ## Candidate solution
 
@@ -20,11 +21,15 @@ import (
 func repeat(word string, n int) string {
     var b strings.Builder
     b.Grow(len(word) * n)
-    for i := 0; i < n; i++ { b.WriteString(word) }
+    for i := 0; i < n; i++ {
+        b.WriteString(word)
+    }
     return b.String()
 }
 
-func main() { fmt.Println(repeat("go", 3)) }
+func main() {
+    fmt.Println(repeat("go", 3)) // gogogo
+}
 ```
 
 ## Run
@@ -34,9 +39,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `Grow(n)` reserves at least n more bytes — may allocate once.
+- `String()` copies buffer to immutable string — one final alloc unavoidable.
+- Do not copy `Builder` after first use — internal state invalid.
+- `Reset()` reuses buffer for next build in hot loops.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs `bytes.Buffer`?**  
+A: Builder optimized for string result; no `String()` extra copy in some paths.
+
+**Q: Wrong Grow estimate?**  
+A: Still works — extra growth if underestimate.
+
+**Q: `WriteByte`/`WriteRune`?**  
+A: Same buffer — account rune UTF-8 size in Grow.
+
+**Q: Benchmark?**  
+A: `+` loop vs Builder with `-benchmem`.
+
+**Q: `strings.Repeat`?**  
+A: Stdlib for single rune/word repeat — use when fits.

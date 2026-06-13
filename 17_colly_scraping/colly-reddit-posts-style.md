@@ -34,9 +34,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Reddit rate-limits and blocks raw scrapers — prefer official API for production.
+- `old.reddit.com` serves simpler HTML than new Reddit (JS-heavy).
+- `AbsoluteURL` required — hrefs often relative `/r/golang/comments/...`.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: AllowedDomains?**  
+A: Stops following promoted external links off-domain.
+
+**Q: Complexity?**  
+A: O(posts on listing page) per visit.
+
+**Q: Edge cases?**  
+A: Stickied posts, ads with similar selectors, NSFW quarantine pages.
+
+**Q: Next page?**  
+A: `OnHTML` on `.next-button a` → Visit next listing URL.
+
+**Q: Production?**  
+A: OAuth API, respect robots.txt, identifiable User-Agent.

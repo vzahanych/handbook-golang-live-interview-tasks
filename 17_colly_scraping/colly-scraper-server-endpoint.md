@@ -43,9 +43,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- New collector per request is simple but heavy — pool collectors or set global timeout.
+- **SSRF risk** — validate `url` query param (block localhost, file://, internal IPs).
+- Scrape in request handler blocks HTTP worker — use job queue for slow targets.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: SSRF mitigation?**  
+A: Parse URL, allowlist schemes/https hosts, reject private IP ranges.
+
+**Q: Complexity?**  
+A: O(scrape time) per API call — unbounded if target slow.
+
+**Q: Edge cases?**  
+A: Missing url param, invalid URL, pages without title.
+
+**Q: Concurrency?**  
+A: Each request spawns collector — cap with semaphore or worker pool.
+
+**Q: Production?**  
+A: Auth on endpoint, cache titles, context timeout per scrape.

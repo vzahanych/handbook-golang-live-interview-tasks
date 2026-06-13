@@ -23,7 +23,9 @@ func reverseString(s string) string {
     return string(r)
 }
 
-func main() { fmt.Println(reverseString("Go语言")) }
+func main() {
+    fmt.Println(reverseString("Go语言")) // 言语oG
+}
 ```
 
 ## Run
@@ -33,9 +35,21 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Reversing bytes of `"语言"` breaks UTF-8 — invalid string or wrong chars.
+- `[]rune(s)` allocates and decodes — O(n) runes, O(n) space.
+- Combining characters (emoji with ZWJ) — rune reverse may still be wrong visually; mention Unicode normalization for production i18n.
+- Byte reverse of ASCII-only strings is fine.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Complexity?**  
+A: O(n) runes time and space for the `[]rune` buffer.
+
+**Q: Without extra `[]rune`?**  
+A: Walk bytes from both ends swapping whole rune sequences — complex; `[]rune` is interview-expected.
+
+**Q: `for _, r := range s`?**  
+A: Iterates by rune, index is byte offset — use for in-place byte tricks only with care.
+
+**Q: Edge cases?**  
+A: Empty string, single rune, ASCII, combining marks, invalid UTF-8 (replacement char).

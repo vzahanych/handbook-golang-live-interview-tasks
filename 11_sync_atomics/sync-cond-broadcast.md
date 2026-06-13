@@ -1,11 +1,12 @@
 # sync cond broadcast
 
 ## Live interview task
-Coordinate goroutines with sync.Cond.
+Coordinate goroutines with `sync.Cond` — wait until condition true, then broadcast.
 
 ## Concepts covered
 - sync.Cond
-- condition loops
+- spurious wakeup
+- mutex pairing
 
 ## Candidate solution
 
@@ -18,11 +19,23 @@ import (
 )
 
 func main() {
-    mu := sync.Mutex{}
+    var mu sync.Mutex
     cond := sync.NewCond(&mu)
     ready := false
-    go func(){ mu.Lock(); for !ready { cond.Wait() }; fmt.Println("go"); mu.Unlock() }()
-    mu.Lock(); ready = true; cond.Broadcast(); mu.Unlock()
+
+    go func() {
+        mu.Lock()
+        for !ready {
+            cond.Wait() // releases mu, waits, re-acquires mu on wake
+        }
+        fmt.Println("go")
+        mu.Unlock()
+    }()
+
+    mu.Lock()
+    ready = true
+    cond.Broadcast()
+    mu.Unlock()
 }
 ```
 
@@ -33,9 +46,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- Always wait in a loop because conditions can change before a goroutine wakes.
+- **Always** `for !condition { cond.Wait() }` — not `if` — spurious wakeups and races.
+- `Wait` must be called with `mu` held — releases lock while sleeping.
+- `Signal` wakes one waiter; `Broadcast` wakes all — choose based on work distribution.
+- Prefer channels/context for new code — Cond for legacy patterns (queues, barriers).
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Why loop not if?**  
+A: Multiple waiters, condition may change before you run — re-check after wake.
+
+**Q: vs channel?**  
+A: Cond for complex condition on shared state under mutex; channel for events.
+
+**Q: Missed signal?**  
+A: Set `ready` before `Broadcast` while holding mutex — waiter checks condition.
+
+**Q: Deadlock?**  
+A: Wait without holding mutex — panic; Signal without mutex — race.
+
+**Q: Complexity?**  
+A: O(waiters) for Broadcast wakeups.

@@ -1,7 +1,7 @@
 # errgroup like cancel on error
 
 ## Live interview task
-Implement a small errgroup-like helper using context cancellation.
+Implement a small errgroup-style helper: run tasks in parallel, cancel siblings on first error.
 
 ## Concepts covered
 - context cancellation
@@ -23,19 +23,42 @@ import (
 func run(ctx context.Context, fns ...func(context.Context) error) error {
     ctx, cancel := context.WithCancel(ctx)
     defer cancel()
+
     errCh := make(chan error, len(fns))
     var wg sync.WaitGroup
+
     for _, fn := range fns {
-        fn := fn
         wg.Add(1)
-        go func(){ defer wg.Done(); if err := fn(ctx); err != nil { cancel(); errCh <- err } }()
+        go func(f func(context.Context) error) {
+            defer wg.Done()
+            if err := f(ctx); err != nil {
+                cancel()
+                errCh <- err
+            }
+        }(fn)
     }
-    wg.Wait(); close(errCh)
-    for err := range errCh { return err }
-    return nil
+
+    wg.Wait()
+    close(errCh)
+
+    for err := range errCh {
+        return err // first collected error
+    }
+    return ctx.Err()
 }
 
-func main() { fmt.Println(run(context.Background(), func(context.Context) error { return errors.New("fail") })) }
+func main() {
+    err := run(context.Background(),
+        func(ctx context.Context) error {
+            <-ctx.Done()
+            return ctx.Err()
+        },
+        func(ctx context.Context) error {
+            return errors.New("fail")
+        },
+    )
+    fmt.Println(err)
+}
 ```
 
 ## Run
@@ -45,9 +68,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `cancel()` on first error — other goroutines should respect `ctx.Done()`.
+- Buffered `errCh` — sender doesn't block if main already moved on (size = task count).
+- Production: `golang.org/x/sync/errgroup` — `Group`, `Go`, `Wait`, optional `SetLimit`.
+- Return first error only — join multiple with `errors.Join` if needed.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Wait for all after error?**  
+A: Yes — `Wait` drains goroutines that exit on canceled ctx; avoid leak.
+
+**Q: Limit concurrency?**  
+A: `errgroup` with semaphore or worker pool channel.
+
+**Q: Panic in worker?**  
+A: errgroup doesn't recover — wrap with safeGo or defer recover.
+
+**Q: vs WaitGroup alone?**  
+A: WaitGroup no error propagation or cancel.
+
+**Q: Complexity?**  
+A: O(n) goroutines for n tasks.

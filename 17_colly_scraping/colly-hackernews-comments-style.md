@@ -38,9 +38,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- HN HTML structure changes — selectors break; prefer stable `data-*` or API when allowed.
+- Append to slice in OnHTML from async collector — mutex if `Async(true)`.
+- `OnScraped` runs once per page — good place to flush batch to DB.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: ChildText vs Text?**  
+A: `ChildText(".author")` scopes to subtree; `Text` is full element text.
+
+**Q: Complexity?**  
+A: O(comments on page) DOM nodes visited.
+
+**Q: Edge cases?**  
+A: Deleted comments, empty author, nested reply threads need recursive Visit.
+
+**Q: Pagination?**  
+A: Follow "More" link or use official Firebase API for HN.
+
+**Q: Production?**  
+A: Rate limit, store raw HTML snapshot, monitor selector drift alerts.

@@ -34,9 +34,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `URLFilters` regex matches full URL string — anchor patterns carefully (`$` end of path).
+- Combine with `AllowedDomains` — filter alone won't block evil.com.
+- `OnRequest` can `r.Abort()` for dynamic rules regex can't express.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Filter vs OnRequest abort?**  
+A: URLFilters early reject; Abort for per-request logic (headers, depth).
+
+**Q: Complexity?**  
+A: O(regex) per candidate URL — compile once with `MustCompile`.
+
+**Q: Edge cases?**  
+A: Trailing slash, URL encoding `%20`, case sensitivity.
+
+**Q: Production?**  
+A: Allowlist sitemap URLs first, then expand with filters.
+
+**Q: Interview trap?**  
+A: Forgetting scheme/host in regex — match `r.URL.Path` in OnRequest instead.

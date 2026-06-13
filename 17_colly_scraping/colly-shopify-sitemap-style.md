@@ -36,9 +36,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `OnXML` not OnHTML — sitemaps are XML; namespace prefixes may affect XPath.
+- Sitemap index files list other sitemaps — handle `sitemapindex` vs `urlset` recursively.
+- Filter `/products/` before Visit — avoids crawling blog/policy URLs.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: OnXML vs OnHTML?**  
+A: OnXML for RSS/Atom/sitemap; OnHTML for HTML DOM.
+
+**Q: Complexity?**  
+A: O(urls in sitemap) parse; visiting each product is separate HTTP cost.
+
+**Q: Edge cases?**  
+A: Multi-lang hreflang URLs, gzip sitemap `.xml.gz`, 50k URL limit per file.
+
+**Q: Visit from OnXML?**  
+A: `c.Visit(u)` enqueue product pages — combine with queue + rate limit.
+
+**Q: Production?**  
+A: Shopify `/sitemap.xml` + JSON endpoints; respect Crawl-delay.

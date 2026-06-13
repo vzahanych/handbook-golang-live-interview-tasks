@@ -39,10 +39,36 @@ func main() {
 go run .
 ```
 
-## Interview notes / pitfalls
-- init order is per file order after dependency initialization
+## Expected output
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+```
+var build
+init 1
+init 2
+main interview interview
+```
+
+Order: package-level `const`/`var` initializers (in declaration order) → all `init` functions (in source order) → `main`.
+
+## Interview notes / pitfalls
+- `init` runs after imported packages finish initializing (depth-first dependency order).
+- Multiple `init` functions in one file run top-to-bottom; across files in a package, order is file-name order (not guaranteed across toolchains for same name — rely on explicit deps instead).
+- `init` cannot be called manually; use it only for cheap, idempotent package setup.
+- A `var` initializer like `trace("var build")` runs **before** any `init` — easy to get wrong in whiteboard questions.
+
+## Q&A
+
+**Q: What runs first — `init` or package-level `var`?**  
+A: Package-level variables and constants initialize first, in dependency order within the package. Then all `init` functions run. Finally `main` runs in `package main`.
+
+**Q: Can you have more than one `init` per package?**  
+A: Yes. They all run, in the order they appear in source files (per file, top to bottom).
+
+**Q: What happens if `init` panics?**  
+A: The program aborts before `main` runs. Imported packages that already initialized stay initialized; the failing package does not complete init.
+
+**Q: When is `init` appropriate in production?**  
+A: Registering drivers (`database/sql`), global metrics, validating package-level config, or one-time caches. Avoid heavy I/O, network calls, or logic that makes testing hard — prefer explicit `New()` constructors.
+
+**Q: Complexity?**  
+A: O(1) per initializer; space O(1) for this example. Real packages: watch for init chains that slow cold start.

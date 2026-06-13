@@ -38,9 +38,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Missing `c.Wait()` — program exits before async visits complete (classic bug).
+- `Parallelism: 2` caps concurrent requests per domain glob — not global goroutine count.
+- Shared slice append in OnResponse needs mutex if multiple callbacks write concurrently.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Speedup with 5 URLs, parallelism 2?**  
+A: ~3 waves if each takes 1s — not 5× faster.
+
+**Q: Complexity?**  
+A: O(n/p) wall time idealized; memory O(n) in-flight responses.
+
+**Q: Edge cases?**  
+A: One slow URL blocks a slot until timeout — set `Collector.Timeout`.
+
+**Q: vs worker pool?**  
+A: Colly LimitRule is domain-aware scheduler built-in.
+
+**Q: Production?**  
+A: Context cancel on shutdown, Wait with timeout wrapper.

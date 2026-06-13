@@ -36,9 +36,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `MaxDepth` counts from seed (depth 0) — off-by-one confusion in interviews.
+- Without `AllowedDomains` + visited tracking, crawler may loop on calendar/archive pages.
+- `AbsoluteURL` resolves relative hrefs — required before `Visit`.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: BFS vs DFS?**  
+A: Colly default is breadth-first via internal queue.
+
+**Q: Complexity?**  
+A: O(pages × links per page) bounded by depth and domain filter.
+
+**Q: Duplicate URLs?**  
+A: Colly deduplicates visited URLs per collector.
+
+**Q: Edge cases?**  
+A: Fragment-only links (`#section`), `mailto:`, query-string duplicates.
+
+**Q: Production?**  
+A: Sitemap seed, politeness limits, persistent frontier (DB queue).

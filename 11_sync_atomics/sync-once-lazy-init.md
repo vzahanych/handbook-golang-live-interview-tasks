@@ -1,11 +1,12 @@
 # sync once lazy init
 
 ## Live interview task
-Initialize a value exactly once with sync.Once.
+Initialize a value exactly once with `sync.Once`.
 
 ## Concepts covered
 - sync.Once
 - lazy initialization
+- singleton
 
 ## Candidate solution
 
@@ -17,15 +18,21 @@ import (
     "sync"
 )
 
-var once sync.Once
-var config map[string]string
+var (
+    once   sync.Once
+    config map[string]string
+)
 
 func Config() map[string]string {
-    once.Do(func(){ config = map[string]string{"env":"dev"} })
+    once.Do(func() {
+        config = map[string]string{"env": "dev"}
+    })
     return config
 }
 
-func main() { fmt.Println(Config(), Config()) }
+func main() {
+    fmt.Println(Config(), Config()) // same map, init once
+}
 ```
 
 ## Run
@@ -35,9 +42,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `once.Do(f)` runs `f` exactly once — concurrent callers block until first completes.
+- If `f` panics, `Do` considers unfinished — **retry on next call** (rare edge case).
+- Don't return mutable global from `Config()` without warning — callers can mutate shared map.
+- Prefer `sync.Once` inside struct for per-instance lazy init.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs `init()`?**  
+A: `init` always runs at startup; `Once` defers until first use — faster cold start.
+
+**Q: Pass init error?**  
+A: `Once` no error return — use `sync.OnceValues` (Go 1.21+) or manual `sync.Mutex` + `err`.
+
+**Q: Double-checked locking?**  
+A: `Once` implements correct DCL — don't hand-roll.
+
+**Q: Reset Once?**  
+A: Not supported — new `Once` variable or redesign.
+
+**Q: Complexity?**  
+A: First call pays init; later O(1) atomic fast path.

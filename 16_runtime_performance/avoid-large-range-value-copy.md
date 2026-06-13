@@ -1,11 +1,12 @@
 # avoid large range value copy
 
 ## Live interview task
-Avoid copying large elements by ranging over indexes instead of values.
+Avoid copying large structs in `for range` by iterating indexes or pointers.
 
 ## Concepts covered
-- range copy cost
+- range copy semantics
 - large structs
+- index iteration
 
 ## Candidate solution
 
@@ -14,17 +15,22 @@ package main
 
 import "fmt"
 
-type Big struct { Data [1024]byte; N int }
+type Big struct {
+    Data [1024]byte
+    N    int
+}
 
-func sum(xs []Big) int {
+func sumIndex(xs []Big) int {
     total := 0
-    for i := range xs { // avoids copying Big into second range variable
-        total += xs[i].N
+    for i := range xs {
+        total += xs[i].N // no copy of Big
     }
     return total
 }
 
-func main() { fmt.Println(sum([]Big{{N:1},{N:2}})) }
+func main() {
+    fmt.Println(sumIndex([]Big{{N: 1}, {N: 2}}))
+}
 ```
 
 ## Run
@@ -34,9 +40,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `for _, v := range xs` copies each element — costly for large `T`.
+- `for i := range xs` uses index — accesses slice without copying element.
+- Alternative: `[]*Big` — range copies pointer (word size), not struct.
+- Small ints/strings — copy cost negligible; optimize when struct is large or hot loop.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: `for i, v := range`?**  
+A: Still copies `v` each iteration — use index only for large types.
+
+**Q: Modify during range?**  
+A: `xs[i].N++` works; `v.N++` does not update slice.
+
+**Q: Complexity?**  
+A: O(n); constant factor differs by struct size.
+
+**Q: Benchmark?**  
+A: Compare value-range vs index-range on 1KB struct.
+
+**Q: Interview one-liner?**  
+A: "Range copies values; index or pointer slice for large elements."

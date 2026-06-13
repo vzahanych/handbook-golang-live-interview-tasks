@@ -4,7 +4,8 @@
 Accept a multipart file upload and report its size.
 
 ## Concepts covered
-- multipart forms
+- multipart/form-data
+- ParseMultipartForm
 - io.Copy
 
 ## Candidate solution
@@ -15,31 +16,70 @@ package main
 import (
     "fmt"
     "io"
+    "log"
     "net/http"
 )
 
 func upload(w http.ResponseWriter, r *http.Request) {
-    if err := r.ParseMultipartForm(10 << 20); err != nil { http.Error(w, err.Error(), 400); return }
+    if r.Method != http.MethodPost {
+        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    const maxMem = 10 << 20 // 10 MiB
+    if err := r.ParseMultipartForm(maxMem); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
     f, header, err := r.FormFile("file")
-    if err != nil { http.Error(w, err.Error(), 400); return }
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
     defer f.Close()
-    n, _ := io.Copy(io.Discard, f)
+
+    n, err := io.Copy(io.Discard, f)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
     fmt.Fprintf(w, "%s: %d bytes\n", header.Filename, n)
 }
 
-func main() { http.HandleFunc("/upload", upload); http.ListenAndServe(":8080", nil) }
+func main() {
+    http.HandleFunc("/upload", upload)
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
 ```
 
 ## Run
 
 ```bash
 go run .
+curl -F 'file=@/etc/hosts' localhost:8080/upload
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `ParseMultipartForm` limits memory — large files spill to temp disk.
+- `FormFile("file")` — field name must match HTML/curl form.
+- Stream to destination with `io.Copy(dst, f)` — don't read all into memory.
+- Validate filename, content-type, virus scan in production.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Max upload size?**  
+A: `r.Body = MaxBytesReader(w, r.Body, max)` before parse.
+
+**Q: Multiple files?**  
+A: `r.MultipartForm.File["files"]` slice.
+
+**Q: Progress?**  
+A: `io.TeeReader` or custom `Reader` wrapper.
+
+**Q: Security?**  
+A: Sanitize paths, store outside web root, random object names.
+
+**Q: Complexity?**  
+A: O(bytes) streamed.

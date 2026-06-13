@@ -1,30 +1,42 @@
 # object pool with reset
 
 ## Live interview task
-Reuse objects with an explicit pool and reset before putting them back.
+Reuse objects with a pool — reset state before returning to pool.
 
 ## Concepts covered
-- manual pooling
-- reset
-- allocations
+- sync.Pool
+- manual pool
+- reset before reuse
 
 ## Candidate solution
 
 ```go
 package main
 
-import "fmt"
+import (
+    "bytes"
+    "fmt"
+    "sync"
+)
 
-type Buffer struct{ data []byte }
-var pool []*Buffer
-
-func get() *Buffer {
-    if len(pool) == 0 { return &Buffer{data: make([]byte, 0, 1024)} }
-    b := pool[len(pool)-1]; pool = pool[:len(pool)-1]; return b
+var pool = sync.Pool{
+    New: func() any {
+        return bytes.NewBuffer(make([]byte, 0, 1024))
+    },
 }
-func put(b *Buffer) { b.data = b.data[:0]; pool = append(pool, b) }
 
-func main() { b := get(); b.data = append(b.data, "go"...); fmt.Println(string(b.data)); put(b) }
+func process() string {
+    b := pool.Get().(*bytes.Buffer)
+    b.Reset()
+    defer pool.Put(b)
+
+    b.WriteString("hello")
+    return b.String()
+}
+
+func main() {
+    fmt.Println(process())
+}
 ```
 
 ## Run
@@ -34,9 +46,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- **Reset** before reuse — stale bytes/data leak between requests.
+- `sync.Pool` objects may be GC'd anytime — pool is cache not storage.
+- Return copies if next user may Get same buffer while you hold `[]byte` view.
+- Clear sensitive data before Put in security-sensitive pools.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs manual `[]*Buffer` stack?**  
+A: sync.Pool handles per-P sharding and GC; manual pool for deterministic tests.
+
+**Q: Pool poison?**  
+A: Forgotten Reset — test with distinctive first user data.
+
+**Q: When not to pool?**  
+A: Rare allocation, huge objects, hard-to-reset state.
+
+**Q: Complexity?**  
+A: Get/Put O(1); reduces GC pressure.
+
+**Q: Interview tie-in?**  
+A: Same as sync-pool-buffer-reuse in category 11.

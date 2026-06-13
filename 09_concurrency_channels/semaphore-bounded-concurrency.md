@@ -20,18 +20,17 @@ import (
 )
 
 func main() {
-    sem := make(chan struct{}, 2)
+    sem := make(chan struct{}, 2) // max 2 concurrent
     var wg sync.WaitGroup
     for i := 0; i < 5; i++ {
-        i := i
         wg.Add(1)
-        go func() {
+        go func(id int) {
             defer wg.Done()
-            sem <- struct{}{}
-            defer func(){ <-sem }()
+            sem <- struct{}{}        // acquire
+            defer func() { <-sem }() // release
             time.Sleep(10 * time.Millisecond)
-            fmt.Println("done", i)
-        }()
+            fmt.Println("done", id)
+        }(i)
     }
     wg.Wait()
 }
@@ -44,9 +43,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Empty struct `struct{}{}` — zero-size token, count = buffer capacity.
+- Acquire: send to sem; release: receive — inverted from mutex mental model.
+- `defer` release ensures unlock on panic — pair with worker defer Done.
+- `golang.org/x/sync/semaphore` — weighted semaphore for acquire N units.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs worker pool?**  
+A: Semaphore limits concurrency; pool also queues work — often combined.
+
+**Q: Deadlock?**  
+A: Acquire without release — always defer release; don't block forever on full sem without timeout.
+
+**Q: Try-acquire?**  
+A: `select { case sem<-struct{}{}: ...; default: ... }`.
+
+**Q: Capacity 0?**  
+A: Blocks every acquire until release — synchronous handoff.
+
+**Q: Production?**  
+A: Rate-limit DB connections, API calls, file descriptors.

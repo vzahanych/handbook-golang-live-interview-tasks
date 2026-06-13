@@ -38,9 +38,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `RoundRobinProxySwitcher` rotates per request — failed proxy still rotates (add health checks).
+- HTTPS needs CONNECT support from proxy — HTTP proxy URL is typical.
+- Respect target site ToS — proxies for evasion are unethical/illegal in many contexts.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Sticky sessions?**  
+A: Custom `SetProxyFunc` mapping domain → fixed proxy.
+
+**Q: Complexity?**  
+A: O(1) proxy pick per request.
+
+**Q: Edge cases?**  
+A: Proxy auth in URL `http://user:pass@host:8080`, TLS MITM corporate proxies.
+
+**Q: OnError handling?**  
+A: Log and retry with different proxy or direct fallback.
+
+**Q: Production?**  
+A: Proxy pool health metrics, rate limit per egress IP.

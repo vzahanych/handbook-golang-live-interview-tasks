@@ -1,12 +1,12 @@
 # bounded crawler standard library
 
 ## Live interview task
-Build a small bounded crawler using net/http and channels.
+Build bounded concurrent HTTP fetcher using stdlib only (no Colly).
 
 ## Concepts covered
-- HTTP client
+- http.Client
 - worker pool
-- bounded concurrency
+- semaphore
 
 ## Candidate solution
 
@@ -15,20 +15,44 @@ package main
 
 import (
     "fmt"
+    "io"
     "net/http"
     "sync"
+    "time"
 )
 
 func crawl(urls []string, workers int) {
     jobs := make(chan string)
     var wg sync.WaitGroup
-    client := &http.Client{}
-    for w:=0; w<workers; w++ { wg.Add(1); go func(){ defer wg.Done(); for u := range jobs { resp, err := client.Get(u); if err != nil { fmt.Println(u, err); continue }; fmt.Println(u, resp.StatusCode); resp.Body.Close() } }() }
-    for _, u := range urls { jobs <- u }
-    close(jobs); wg.Wait()
+    client := &http.Client{Timeout: 10 * time.Second}
+
+    for w := 0; w < workers; w++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            for u := range jobs {
+                resp, err := client.Get(u)
+                if err != nil {
+                    fmt.Println(u, err)
+                    continue
+                }
+                _, _ = io.Copy(io.Discard, resp.Body)
+                resp.Body.Close()
+                fmt.Println(u, resp.StatusCode)
+            }
+        }()
+    }
+
+    for _, u := range urls {
+        jobs <- u
+    }
+    close(jobs)
+    wg.Wait()
 }
 
-func main() { crawl([]string{"https://example.com", "https://go.dev"}, 2) }
+func main() {
+    crawl([]string{"https://example.com", "https://go.dev"}, 2)
+}
 ```
 
 ## Run
@@ -38,9 +62,24 @@ go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- Worker pool bounds concurrency — polite vs unbounded goroutines per URL.
+- Always close response body — connection reuse.
+- Respect `robots.txt` and rate limits in production.
+- Extend: parse HTML links, visited set, max depth BFS.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: vs Colly?**  
+A: Colly handles cookies, callbacks, queue — stdlib minimal control.
+
+**Q: Context cancel?**  
+A: `NewRequestWithContext` per fetch.
+
+**Q: Redirects?**  
+A: Default client follows — limit with CheckRedirect.
+
+**Q: Duplicate URLs?**  
+A: `map[string]struct{}` visited set.
+
+**Q: Complexity?**  
+A: O(urls) tasks with W parallelism.

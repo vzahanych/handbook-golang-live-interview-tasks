@@ -35,9 +35,23 @@ go mod init scrape && go get github.com/gocolly/colly/v2 && go run .
 ```
 
 ## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+- `Async(true)` required for parallelism — must call `c.Wait()` or main exits early.
+- `LimitRule` is per domain glob — multiple rules can apply; `Parallelism: 1` serializes.
+- `RandomDelay` adds jitter on top of base `Delay` — reduces thundering herd patterns.
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+## Q&A
+
+**Q: Why politeness matters?**  
+A: Avoid IP bans; many sites rate-limit aggressive crawlers.
+
+**Q: Complexity?**  
+A: Crawl time grows with delay × request count.
+
+**Q: Edge cases?**  
+A: Subdomains — separate LimitRule per `*.api.example.com`.
+
+**Q: vs global sleep?**  
+A: LimitRule integrates with Colly scheduler per domain.
+
+**Q: Production?**  
+A: Read Crawl-delay from robots.txt; backoff on 429 Retry-After.

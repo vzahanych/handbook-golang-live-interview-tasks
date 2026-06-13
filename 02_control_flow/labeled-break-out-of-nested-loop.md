@@ -28,7 +28,7 @@ outer:
     return
 }
 
-func main() { fmt.Println(find([][]int{{1,2},{3,4}}, 3)) }
+func main() { fmt.Println(find([][]int{{1, 2}, {3, 4}}, 3)) }
 ```
 
 ## Run
@@ -37,10 +37,43 @@ func main() { fmt.Println(find([][]int{{1,2},{3,4}}, 3)) }
 go run .
 ```
 
-## Interview notes / pitfalls
-- None specific; discuss edge cases and complexity.
+## Expected output
 
-## Follow-up questions
-- What is the time and space complexity?
-- What edge cases would you test?
-- How would you make this production-ready?
+```
+1 0 true
+```
+
+## Alternatives (no labels)
+
+```go
+func findFunc(matrix [][]int, target int) (int, int, bool) {
+    for i, r := range matrix {
+        if j, ok := findInRow(r, target); ok {
+            return i, j, true
+        }
+    }
+    return 0, 0, false
+}
+```
+
+Extracting inner search to a function with `return` is often clearer than labels.
+
+## Interview notes / pitfalls
+- `break` without label exits only the innermost loop.
+- `break outer` exits the labeled `for` — not `switch` unless labeled.
+- `continue outer` skips to the next iteration of the outer loop.
+- Labels are rare in production Go — prefer helper functions or `goto` only in generated/parser code.
+
+## Q&A
+
+**Q: Can you label a `switch`?**  
+A: Yes — `break label` can exit an outer switch or loop; rarely used.
+
+**Q: Complexity?**  
+A: O(rows × cols) worst case; O(1) extra space.
+
+**Q: Edge cases?**  
+A: Empty matrix, ragged rows, duplicate targets (first match wins), target not found → `ok == false`.
+
+**Q: When would an interviewer reject labels?**  
+A: If readability suffers — show you know the helper-function refactor.
