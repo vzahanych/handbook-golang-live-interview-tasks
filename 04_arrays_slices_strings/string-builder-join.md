@@ -18,22 +18,27 @@ import (
     "strings"
 )
 
+// join concatenates parts with sep between them — one allocation when size is precomputed.
+// Avoids s += in a loop, which copies the whole string on every append (O(n²) bytes).
+//
+// Example: join(["a","b","c"], ",") → "a,b,c"
+//   n = 2 seps + len("a")+len("b")+len("c") = 2+3 = 5 bytes
 func join(parts []string, sep string) string {
     if len(parts) == 0 {
         return ""
     }
-    n := len(sep) * (len(parts) - 1)
+    n := len(sep) * (len(parts) - 1) // separators sit between parts, not after the last
     for _, p := range parts {
-        n += len(p)
+        n += len(p) // total byte length of the result
     }
     var b strings.Builder
-    b.Grow(n)
+    b.Grow(n) // reserve backing buffer once (hint — may still grow if n is wrong)
     b.WriteString(parts[0])
     for _, p := range parts[1:] {
         b.WriteString(sep)
         b.WriteString(p)
     }
-    return b.String()
+    return b.String() // copy buffer to an immutable string
 }
 
 func main() {

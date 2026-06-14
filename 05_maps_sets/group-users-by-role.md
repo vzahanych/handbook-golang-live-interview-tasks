@@ -17,9 +17,15 @@ import "fmt"
 
 type User struct{ Name, Role string }
 
+// groupByRole builds map[role] → users with that role, preserving input order within each group.
+//
+// Example: Ann(admin), Bob(user), Cat(admin) →
+//   "admin": [Ann, Cat]
+//   "user":  [Bob]
 func groupByRole(users []User) map[string][]User {
     out := make(map[string][]User)
     for _, u := range users {
+        // out[u.Role] is nil on first sight of a role — append still works
         out[u.Role] = append(out[u.Role], u)
     }
     return out

@@ -15,17 +15,21 @@ package main
 
 import "fmt"
 
+// firstUnique returns the first rune in s that appears exactly once.
+// Two passes: count frequencies, then scan in original order for count == 1.
+//
+// Example: "swiss" → counts{s:2, w:1, i:1} → first rune with count 1 is 'w'.
 func firstUnique(s string) (rune, bool) {
     counts := make(map[rune]int)
     for _, r := range s {
-        counts[r]++
+        counts[r]++ // pass 1: frequency of each rune (range decodes UTF-8)
     }
     for _, r := range s {
         if counts[r] == 1 {
-            return r, true
+            return r, true // pass 2: left-to-right order preserved
         }
     }
-    return 0, false
+    return 0, false // no unique rune (empty string or all duplicates)
 }
 
 func main() {

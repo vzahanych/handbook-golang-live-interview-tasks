@@ -11,7 +11,7 @@ Each task contains a prompt, concepts or requirements, a candidate solution or s
 ## Categories
 
 - [01_language_basics](./01_language_basics/README.md) - Language basics and source organization (8 tasks)
-- [02_control_flow](./02_control_flow/README.md) - Control flow and statements (9 tasks)
+- [02_control_flow](./02_control_flow/README.md) - Control flow and statements (10 tasks)
 - [03_types_values_memory](./03_types_values_memory/README.md) - Types, values, identity, assignability, memory model (7 tasks)
 - [04_arrays_slices_strings](./04_arrays_slices_strings/README.md) - Arrays, slices, strings and bytes (15 tasks)
 - [05_maps_sets](./05_maps_sets/README.md) - Maps, sets and grouping (10 tasks)

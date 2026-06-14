@@ -20,13 +20,14 @@ import (
 
 func main() {
     m := map[string]int{"b": 2, "a": 1, "c": 3}
+    // Map iteration order is random — never rely on `for k, v := range m` for stable output.
     keys := make([]string, 0, len(m))
     for k := range m {
         keys = append(keys, k)
     }
-    sort.Strings(keys)
+    sort.Strings(keys) // deterministic key order: a, b, c
     for _, k := range keys {
-        fmt.Println(k, m[k])
+        fmt.Println(k, m[k]) // look up value by sorted key
     }
 }
 ```

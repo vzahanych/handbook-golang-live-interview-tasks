@@ -15,11 +15,18 @@ package main
 
 import "fmt"
 
+// merge combines two ascending sorted slices into one sorted slice.
+//
+// Two pointers i and j walk a and b; each step appends the smaller head.
+// When one slice is exhausted, append the rest of the other in one shot.
+//
+// Example: a=[1,3,5] b=[2,4,6]
+//   pick 1, then 2, then 3, then 4, then 5, then 6 → [1 2 3 4 5 6]
 func merge(a, b []int) []int {
-    out := make([]int, 0, len(a)+len(b))
+    out := make([]int, 0, len(a)+len(b)) // one allocation, no append growth copies
     i, j := 0, 0
     for i < len(a) && j < len(b) {
-        if a[i] <= b[j] {
+        if a[i] <= b[j] { // take from a (<= keeps a's duplicates first when equal)
             out = append(out, a[i])
             i++
         } else {
@@ -27,7 +34,7 @@ func merge(a, b []int) []int {
             j++
         }
     }
-    out = append(out, a[i:]...)
+    out = append(out, a[i:]...) // whichever slice has tail left — other is a[i:] or b[j:] with len 0
     out = append(out, b[j:]...)
     return out
 }

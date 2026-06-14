@@ -1,7 +1,7 @@
 # semaphore bounded concurrency
 
 ## Live interview task
-Limit concurrent work with a buffered channel used as a semaphore.
+Run many tasks concurrently but cap how many execute **at the same time** using a buffered channel as a **counting semaphore** — capacity = max in-flight workers. Example: launch 5 goroutines with `sem := make(chan struct{}, 2)` — at most 2 sleep/work at once; each task **acquires** with `sem <- struct{}{}` before work and **releases** with `<-sem` in `defer` when done.
 
 ## Concepts covered
 - buffered channels
@@ -20,19 +20,21 @@ import (
 )
 
 func main() {
-    sem := make(chan struct{}, 2) // max 2 concurrent
+    // Buffered channel as counting semaphore: len(sem) = slots in use, cap = max slots.
+    // Pre-filled buffer would mean fewer acquires available — start empty (0/2 in use).
+    sem := make(chan struct{}, 2)
     var wg sync.WaitGroup
     for i := 0; i < 5; i++ {
         wg.Add(1)
         go func(id int) {
             defer wg.Done()
-            sem <- struct{}{}        // acquire
-            defer func() { <-sem }() // release
-            time.Sleep(10 * time.Millisecond)
+            sem <- struct{}{} // acquire: send fills a slot; blocks when 2 workers already hold tokens
+            defer func() { <-sem }() // release: receive frees a slot for the next waiter
+            time.Sleep(10 * time.Millisecond) // simulated work — only 2 ids run this at once
             fmt.Println("done", id)
-        }(i)
+        }(i) // pass id — avoid loop variable capture
     }
-    wg.Wait()
+    wg.Wait() // wait for all 5 tasks (each acquired, worked, released)
 }
 ```
 

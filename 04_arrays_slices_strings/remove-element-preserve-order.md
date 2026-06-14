@@ -15,17 +15,26 @@ package main
 
 import "fmt"
 
+// removeAll drops every element equal to bad, keeping relative order of the rest.
+// Filters in place: read with range, write compacted values at index w.
+//
+// Example: ["a", "x", "b", "x"], bad="x"
+//   v="a" → s[0]="a", w=1
+//   v="x" → skip
+//   v="b" → s[1]="b", w=2
+//   v="x" → skip
+//   zero s[2], s[3] → return s[:2] → ["a", "b"]
 func removeAll[T comparable](s []T, bad T) []T {
-    w := 0
+    w := 0 // length of kept prefix s[:w]
     for _, v := range s {
         if v != bad {
-            s[w] = v
+            s[w] = v // compact survivors toward the front
             w++
         }
     }
     var zero T
     for i := w; i < len(s); i++ {
-        s[i] = zero // release references for GC (pointers, strings, slices)
+        s[i] = zero // clear hidden tail so GC can drop refs (strings, slices, pointers)
     }
     return s[:w]
 }

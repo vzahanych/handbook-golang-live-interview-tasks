@@ -1,7 +1,7 @@
 # rotate slice left k
 
 ## Live interview task
-Rotate a slice left by k positions using the three-reversal algorithm.
+Rotate a slice left by k positions using the three-reversal algorithm — move the first k elements to the end (e.g. `[1,2,3,4,5]` left by `2` → `[3,4,5,1,2]`).
 
 ## Concepts covered
 - slice expressions
@@ -14,19 +14,30 @@ package main
 
 import "fmt"
 
+// reverse swaps elements in place so s reads backwards.
 func reverse(s []int) {
     for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
         s[i], s[j] = s[j], s[i]
     }
 }
 
+// rotateLeft moves the first k elements to the end: [A|B] → [B|A].
+// Uses three reversals — O(n) time, O(1) extra space.
+//
+// Split at k: A = s[:k], B = s[k:].
+// Property: reverse( reverse(A) + reverse(B) ) = B + A
+//
+// Example: [1,2,3,4,5], k=2  (A=[1,2] B=[3,4,5])
+//   reverse A     → [2,1,3,4,5]
+//   reverse B     → [2,1,5,4,3]
+//   reverse whole → [3,4,5,1,2]
 func rotateLeft(s []int, k int) {
     if len(s) == 0 {
         return
     }
-    k %= len(s)
+    k %= len(s) // rotating by len(s) is a full circle — no-op
     if k < 0 {
-        k += len(s)
+        k += len(s) // negative k → equivalent left rotation
     }
     reverse(s[:k])
     reverse(s[k:])

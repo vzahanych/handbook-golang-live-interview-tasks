@@ -14,17 +14,19 @@ package main
 
 import "fmt"
 
+// lowerBound returns the first index i where a[i] >= target (insertion point if missing).
+// Search space is half-open [lo, hi) — answer always stays inside it.
 func lowerBound(a []int, target int) int {
     lo, hi := 0, len(a)
     for lo < hi {
-        mid := lo + (hi-lo)/2
+        mid := lo + (hi-lo)/2 // avoid (lo+hi) overflow; mid is always in [lo, hi)
         if a[mid] < target {
-            lo = mid + 1
+            lo = mid + 1 // mid is too small — shrink from the left
         } else {
-            hi = mid
+            hi = mid // a[mid] >= target — mid could be the answer; keep it
         }
     }
-    return lo
+    return lo // lo == hi: first index with a[i] >= target, or len(a)
 }
 
 func main() {

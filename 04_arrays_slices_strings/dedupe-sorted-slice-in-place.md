@@ -15,13 +15,27 @@ package main
 
 import "fmt"
 
+// dedupeSorted keeps one copy of each value in a sorted slice, in place.
+// Requires ascending order — equal values are adjacent, so we only compare neighbors.
+//
+// Two indices:
+//   r — read cursor, scans every element
+//   w — write cursor, length of the unique prefix built so far
+//
+// Example [1, 1, 2, 2, 2, 3]:
+//   start: s=[1,1,2,2,2,3], w=1 (s[0] is already the first unique)
+//   r=1: s[1]==1 → skip duplicate
+//   r=2: s[2]=2 is new → s[1]=2, w=2 → [1,2,2,2,2,3]
+//   r=3,4: still 2 → skip
+//   r=5: s[5]=3 is new → s[2]=3, w=3 → [1,2,3,2,2,3]
+//   return s[:3] → [1 2 3] (tail may linger in backing array/cap)
 func dedupeSorted(s []int) []int {
     if len(s) < 2 {
         return s
     }
-    w := 1
+    w := 1 // unique prefix is s[:w]; s[0] is always kept
     for r := 1; r < len(s); r++ {
-        if s[r] != s[w-1] {
+        if s[r] != s[w-1] { // new value — different from last unique written
             s[w] = s[r]
             w++
         }

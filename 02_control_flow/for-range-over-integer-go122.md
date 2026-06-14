@@ -8,7 +8,7 @@ Print indexes 0..n-1 using the Go 1.22 integer range form.
 - integer range (`for i := range n`, Go 1.22+)
 - per-iteration loop variables (Go 1.22+ — see [loop-variable-closure-capture](../01_language_basics/loop-variable-closure-capture.md))
 - iterator range (`for v := range seq`, `iter.Seq` / `iter.Seq2`, Go 1.23+ — see [for-range-over-iter-seq-go123](./for-range-over-iter-seq-go123.md))
-- stdlib iterators (`slices.*`, `maps.*`, Go 1.23+; `reflect.*` iterators, Go 1.23–1.26)
+- stdlib iterators (`slices.*`, `maps.*`, Go 1.23+; `reflect.*` iterators, Go 1.23–1.26 — see [for-range-stdlib-iterators-go123](./for-range-stdlib-iterators-go123.md))
 
 ## Candidate solution
 
@@ -53,9 +53,9 @@ go run . # Go 1.22+ (integer range); tested on Go 1.26.x
 | always | slice, array, string, map, channel | `for i, v := range xs` |
 | 1.22 | non-negative **integer** | `for i := range n` |
 | 1.23 | **`iter.Seq[V]`** / **`iter.Seq2[K,V]`** | `for v := range count(n)` |
-| 1.23 | **`slices` / `maps` helpers** | `for k := range maps.Keys(m)`; `for i, v := range slices.Backward(xs)` |
-| 1.23 | **`reflect.Value.Seq` / `Seq2`** | `for v := range reflect.ValueOf(xs).Seq()` on slice/array/map/string/chan |
-| 1.26 | **`reflect.Type/Value` metadata iterators** | `for field, val := range reflect.ValueOf(p).Fields()`; `for m := range t.Methods()` |
+| 1.23 | **`slices` / `maps` helpers** | [for-range-stdlib-iterators-go123](./for-range-stdlib-iterators-go123.md) |
+| 1.23 | **`reflect.Value.Seq` / `Seq2`** | same file — `for i, v := range reflect.ValueOf(xs).Seq2()` |
+| 1.26 | **`reflect.Type/Value` metadata iterators** | same file — `for field, val := range reflect.ValueOf(p).Fields()` |
 
 No new **language** range syntax after 1.23 — 1.24–1.26 add more stdlib values you can pass to `range` (mostly `reflect`). Full iterator example: [for-range-over-iter-seq-go123](./for-range-over-iter-seq-go123.md).
 

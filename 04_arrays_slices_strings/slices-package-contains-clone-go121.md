@@ -8,6 +8,24 @@ Use the Go 1.21+ `slices` package for common slice operations instead of hand-ro
 - generics
 - stdlib idioms
 
+## `slices` package reference (Go 1.26.x)
+
+All functions are generic; constraints vary (`comparable`, `cmp.Ordered`, or custom `func`).
+
+| Category | Functions |
+|----------|-----------|
+| **Search** | `Contains`, `ContainsFunc`, `Index`, `IndexFunc`, `BinarySearch`, `BinarySearchFunc` |
+| **Sort** | `Sort`, `SortFunc`, `SortStableFunc`, `IsSorted`, `IsSortedFunc` |
+| **Compare** | `Equal`, `EqualFunc`, `Compare`, `CompareFunc` |
+| **Min / max** | `Min`, `MinFunc`, `Max`, `MaxFunc` |
+| **Copy / grow** | `Clone`, `Clip`, `Grow`, `Concat`, `Repeat` |
+| **In-place edit** | `Reverse`, `Compact`, `CompactFunc`, `Delete`, `DeleteFunc`, `Insert`, `Replace` |
+| **Iterators** (Go 1.23+) | `All`, `Backward`, `Values`, `Chunk`, `Collect`, `AppendSeq`, `Sorted`, `SortedFunc`, `SortedStableFunc` |
+
+Full list (40 functions):
+
+`All`, `AppendSeq`, `Backward`, `BinarySearch`, `BinarySearchFunc`, `Chunk`, `Clip`, `Clone`, `Collect`, `Compact`, `CompactFunc`, `Compare`, `CompareFunc`, `Concat`, `Contains`, `ContainsFunc`, `Delete`, `DeleteFunc`, `Equal`, `EqualFunc`, `Grow`, `Index`, `IndexFunc`, `Insert`, `IsSorted`, `IsSortedFunc`, `Max`, `MaxFunc`, `Min`, `MinFunc`, `Repeat`, `Replace`, `Reverse`, `Sort`, `SortFunc`, `SortStableFunc`, `Sorted`, `SortedFunc`, `SortedStableFunc`, `Values`
+
 ## Candidate solution
 
 ```go
@@ -60,4 +78,4 @@ A: `slices.Compact` removes consecutive duplicates — slice must be sorted firs
 A: Interviews test understanding; production uses stdlib.
 
 **Q: Go version?**  
-A: `go 1.21` in mod — `slices` and `maps` packages landed together.
+A: Core API in **Go 1.21** (`Clone`, `Contains`, `Sort`, `Delete`, …). Iterator helpers (`All`, `Chunk`, `Collect`, …) need **Go 1.23+**. Confirm `go` line in `go.mod`.

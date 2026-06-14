@@ -1,7 +1,7 @@
 # or done channel combinator
 
 ## Live interview task
-Return a channel that closes when **any** input done-channel closes (OR combinator).
+Implement **`or`**: given n “done” channels (`<-chan struct{}`), return one channel that **closes as soon as any input closes** — logical OR for cancellation signals. Use case: stop a pipeline when *either* the user cancels, a timeout fires, or an upstream stage finishes. Example: `a` is already closed → `<-or(a)` returns immediately and the combined channel is closed.
 
 ## Concepts covered
 - select

@@ -23,7 +23,7 @@ func main() {
     var p *int
     fmt.Println("slice", s == nil, len(s), cap(s)) // true 0 0
     fmt.Println("map", m == nil, len(m))           // true 0
-    fmt.Println("chan", ch == nil, f == nil, p == nil)
+    fmt.Println("chan", ch == nil, f == nil, p == nil) // true true true
     s = append(s, 1) // ok on nil slice
     // m["x"] = 1    // panic: assignment to entry in nil map
     fmt.Println("after append", s)

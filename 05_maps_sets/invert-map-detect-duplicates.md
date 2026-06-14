@@ -19,13 +19,18 @@ import (
     "fmt"
 )
 
+// invert swaps keys and values: map[K]V → map[V]K.
+// Fails if two keys share the same value — inverse would be ambiguous.
+//
+// Example OK:  {"a":1, "b":2} → {1:"a", 2:"b"}
+// Example fail: {"a":1, "b":1} → two keys map to value 1 → error
 func invert[K comparable, V comparable](m map[K]V) (map[V]K, error) {
     out := make(map[V]K, len(m))
     for k, v := range m {
         if _, exists := out[v]; exists {
-            return nil, errors.New("duplicate value")
+            return nil, errors.New("duplicate value") // v already seen from another key
         }
-        out[v] = k
+        out[v] = k // value becomes key; original key becomes value
     }
     return out, nil
 }

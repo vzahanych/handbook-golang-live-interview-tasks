@@ -15,14 +15,20 @@ package main
 
 import "fmt"
 
+// removeAtNoOrder deletes s[i] in O(1) by swapping in the last element — order is not preserved.
+//
+// Example: [10, 20, 30, 40], i=1
+//   s[1] = s[3]     → [10, 40, 30, 40]
+//   zero last slot   → [10, 40, 30, 0]  (help GC if T holds pointers)
+//   return s[:3]    → [10, 40, 30]     (20 is gone; 30 moved from index 2 to stay, 40 filled hole at 1)
 func removeAtNoOrder[T any](s []T, i int) []T {
     if i < 0 || i >= len(s) {
         return s
     }
-    s[i] = s[len(s)-1]
+    s[i] = s[len(s)-1] // overwrite removed slot with tail element
     var zero T
-    s[len(s)-1] = zero
-    return s[:len(s)-1]
+    s[len(s)-1] = zero // clear dropped slot so pointers can be collected
+    return s[:len(s)-1] // shrink length; cap unchanged
 }
 
 func main() {

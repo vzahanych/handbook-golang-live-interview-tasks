@@ -18,24 +18,31 @@ import (
     "unicode"
 )
 
+// palindrome reports whether s reads the same forwards and backwards.
+//
+// A palindrome ignores case and non-alphanumeric runes (spaces, punctuation).
+// Example: "A man, a plan, a canal: Panama" → compare amanaplana canalpanama both ways → true.
+//
+// Algorithm: two pointers i (left) and j (right) move toward the center.
+// Skip ignored runes, then compare letters/digits case-insensitively.
 func palindrome(s string) bool {
-    r := []rune(s)
+    r := []rune(s) // decode UTF-8 once; index by rune, not byte
     for i, j := 0, len(r)-1; i < j; {
         if !unicode.IsLetter(r[i]) && !unicode.IsDigit(r[i]) {
-            i++
+            i++ // left side: skip space, comma, colon, ...
             continue
         }
         if !unicode.IsLetter(r[j]) && !unicode.IsDigit(r[j]) {
-            j--
+            j-- // right side: skip punctuation from the end inward
             continue
         }
         if unicode.ToLower(r[i]) != unicode.ToLower(r[j]) {
-            return false
+            return false // mismatch on the current letter/digit pair
         }
-        i++
+        i++ // matched — move both pointers toward the center
         j--
     }
-    return true
+    return true // all compared pairs matched (empty / only punctuation → true)
 }
 
 func main() {

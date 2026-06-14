@@ -40,13 +40,16 @@ go run .
 ## Safe shutdown pattern
 
 ```go
+// producer sends 0..9 on out until done closes or all values sent.
+// select avoids blocking forever and lets shutdown stop new sends before close(out).
 func producer(done <-chan struct{}, out chan<- int) {
-    defer close(out)
+    defer close(out) // owner closes once — consumers exit for range
     for i := 0; i < 10; i++ {
         select {
         case <-done:
-            return
+            return // stop sending; defer still closes out (no send after close)
         case out <- i:
+            // sent successfully — never send after out is closed
         }
     }
 }

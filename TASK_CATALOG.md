@@ -19,6 +19,7 @@ Generated list of 228 live interview tasks. Run `go run ./tools/generate_catalog
 - [defer-lifo-resource-cleanup](./02_control_flow/defer-lifo-resource-cleanup.md)
 - [for-range-over-integer-go122](./02_control_flow/for-range-over-integer-go122.md)
 - [for-range-over-iter-seq-go123](./02_control_flow/for-range-over-iter-seq-go123.md)
+- [for-range-stdlib-iterators-go123](./02_control_flow/for-range-stdlib-iterators-go123.md)
 - [labeled-break-out-of-nested-loop](./02_control_flow/labeled-break-out-of-nested-loop.md)
 - [select-default-nonblocking-receive](./02_control_flow/select-default-nonblocking-receive.md)
 - [switch-fallthrough-trap](./02_control_flow/switch-fallthrough-trap.md)
