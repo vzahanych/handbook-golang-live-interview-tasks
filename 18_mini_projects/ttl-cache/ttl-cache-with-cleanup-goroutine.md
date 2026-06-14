@@ -80,8 +80,14 @@ func main() {
 
 ## Run
 
+Runnable version lives in [ttl-cache/](ttl-cache/main.go). It adds `Delete`/`Len`
+and a `StartCleanup` that returns a stop func, and `main` demonstrates lazy
+expiry vs. the background sweep.
+
 ```bash
-go run .
+go run ./18_mini_projects/ttl-cache
+# prove the locking is correct:
+go run -race ./18_mini_projects/ttl-cache
 ```
 
 ## Interview notes / pitfalls

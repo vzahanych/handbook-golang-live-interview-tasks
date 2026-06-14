@@ -54,9 +54,15 @@ func main() {
 
 ## Run
 
+Runnable version lives in [cli-todo/](cli-todo/main.go). It adds real
+`add`/`list`/`done` subcommands and an atomic save (temp file + `os.Rename`).
+
 ```bash
-go run .
-cat todo.json
+go run ./18_mini_projects/cli-todo add "learn go"
+go run ./18_mini_projects/cli-todo add "write tests"
+go run ./18_mini_projects/cli-todo done 1
+go run ./18_mini_projects/cli-todo list
+cat todo.json   # written in the current directory (override with -file)
 ```
 
 ## Interview notes / pitfalls

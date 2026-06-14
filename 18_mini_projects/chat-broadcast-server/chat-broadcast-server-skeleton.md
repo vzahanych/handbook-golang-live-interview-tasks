@@ -83,9 +83,16 @@ func main() {
 
 ## Run
 
+Runnable version: server in [server/](server/main.go), client in [client/](client/main.go).
+
 ```bash
-go run .
-# nc localhost 8080
+# terminal 1 — start the server
+go run ./18_mini_projects/chat-broadcast-server/server
+
+# terminals 2+ — one per chat participant (built-in Go client)
+go run ./18_mini_projects/chat-broadcast-server/client
+# ...or just use netcat
+nc localhost 8080
 ```
 
 ## Interview notes / pitfalls

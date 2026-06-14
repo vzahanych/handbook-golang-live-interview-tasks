@@ -57,8 +57,14 @@ func main() {
 
 ## Run
 
+Runnable version lives in [bounded-crawler/](bounded-crawler/main.go).
+
 ```bash
-go run .
+# default URLs (example.com, go.dev)
+go run ./18_mini_projects/bounded-crawler
+
+# or pass your own URLs
+go run ./18_mini_projects/bounded-crawler https://example.com https://go.dev
 ```
 
 ## Interview notes / pitfalls

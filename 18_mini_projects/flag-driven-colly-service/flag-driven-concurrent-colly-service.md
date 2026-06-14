@@ -3,6 +3,28 @@
 ## Live interview task
 Build an HTTP service that receives its initial scrape targets from repeated `-url` flags and scrapes them concurrently with Colly.
 
+## Runnable example
+Implemented in [main.go](main.go) (uses `github.com/gocolly/colly/v2`).
+
+```bash
+# start the service
+go run ./18_mini_projects/flag-driven-colly-service \
+  -addr=:8080 -workers=4 -timeout=8s \
+  -url=https://example.com -url=https://go.dev
+
+# in another terminal
+curl localhost:8080/healthz
+curl localhost:8080/targets
+curl -s -X POST localhost:8080/scrape | jq            # scrape the -url targets
+curl -s -X POST localhost:8080/scrape \
+  -d '{"urls":["https://go.dev"]}' | jq               # or override per request
+```
+
+Each target yields exactly one ordered `Result` (`index`, `url`, `status`, and
+either `title` or `error`); input order is preserved via `colly.Context`,
+concurrency is capped by the `LimitRule`, and `SIGINT`/`SIGTERM` triggers a
+graceful `http.Server` shutdown.
+
 ## Command-line contract
 
 ```text
