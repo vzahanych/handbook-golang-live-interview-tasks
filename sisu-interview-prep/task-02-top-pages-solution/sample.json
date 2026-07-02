@@ -1,0 +1,17 @@
+{
+  "logs": [
+    {"path": "/home", "status_code": 200},
+    {"path": "/home", "status_code": 200},
+    {"path": "/home", "status_code": 200},
+    {"path": "/home", "status_code": 200},
+    {"path": "/products", "status_code": 200},
+    {"path": "/products", "status_code": 200},
+    {"path": "/products", "status_code": 200},
+    {"path": "/checkout", "status_code": 500},
+    {"path": "/checkout", "status_code": 500},
+    {"path": "/checkout", "status_code": 200},
+    {"path": "/about", "status_code": 200},
+    {"path": "/about", "status_code": 200},
+    {"path": "/search", "status_code": 404}
+  ]
+}
