@@ -99,7 +99,7 @@ type PageCount struct {
 // top n pages sorted by count descending with a path-ascending tie-break.
 //   - successOnly (answer 2): when true, only 2xx/3xx responses count as visits.
 //   - n (answer 2): how many pages to return; the caller clamps it to >= 1.
-func analyze(body io.Reader, n int, successOnly bool) (TopPagesResponse, error) {
+func analyze(body io.Reader, page int, successOnly bool) (TopPagesResponse, error) {
 	dec := json.NewDecoder(body)
 
 	tok, err := dec.Token()
@@ -173,8 +173,8 @@ func analyze(body io.Reader, n int, successOnly bool) (TopPagesResponse, error) 
 		return pages[i].Path < pages[j].Path
 	})
 
-	if n < len(pages) {
-		pages = pages[:n] // top N
+	if page < len(pages) {
+		pages = pages[:page] // top N
 	}
 	return TopPagesResponse{TopPages: pages}, nil
 }
